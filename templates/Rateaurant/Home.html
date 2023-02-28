@@ -2,13 +2,17 @@
 {% extends 'Rateaurant/base.html' %}
 {% load staticfiles %}
 
+<head>
+	<link rel="stylesheet" href="Style.css"/>
+</head>
+
 {% block title_block %}
 	Homepage
 {% endblock %}
 
 {% block body_block %}
 
-<div>
+<div id="Leftlist">
   <h2> Top 10 Restaurants </h2>
   {% if restaurants %}
 		<ul>
@@ -23,11 +27,11 @@
 	{% endif %}
 </div>
 
-<div>
+<div id="image">
   <img src="/media/HomeRestaurant.jpg" alt="Picture of a Restaurant" />
 </div>
 
-<div>
+<div id="aboutus">
 	<h2> About us </h2>
 	<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
 		ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
