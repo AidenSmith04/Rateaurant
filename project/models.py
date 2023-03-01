@@ -18,7 +18,7 @@ class Owner(models.Model):
 class Restaurant(models.Model):
     restraunt_ID = models.CharField(max_length=30, primary_key=True, unique=True, on_delete= models.CASCADE)
     name = models.CharField(max_length=50)
-    location = models.CharField(max_length=50)
+    postcode = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
     takeaway_option = models.BooleanField(default=True)
     
@@ -41,7 +41,7 @@ class Ratings(models.Model):
         FOUR_STARS = 4
         FIVE_STARS = 5
    
-    customer_Id = models.ManyToManyField(Customer)
+    customer_ID = models.ManyToManyField(Customer)
     restraunt_ID = models.ManyToManyField(Restaurant)
     food_Rating = models.IntegerField(choices=Rating_Values.choices)
     service_Rating = models.IntegerField(choices=Rating_Values.choices)
