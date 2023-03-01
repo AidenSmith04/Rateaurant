@@ -16,7 +16,7 @@
 
 {% block body_block %}
 
-<div>
+<div id="Leftlist">
   <p>
       Name: {{ restaurant.name }} <br>
       Address: {{ restaurant.location }} <br>
@@ -29,15 +29,16 @@
   </p>
 </div>
 
-<div>
+<div id="restaurantImage">
   <img src="/media/{{ restaurant.name }}.jpg" alt="Picture of the Restaurant" />
 </div>
 
-<div>
+<div id="googleMaps">
     Google Maps Goes here
 </div>
 
-<div>
+<div id="form">
+	<hr />
 	<h2> Rate this Restaurant </h2>
 	<form id="rating_form" method="post" action="{% url 'Rateaurant:Restaurant' %">
 			{% csrf_token %}

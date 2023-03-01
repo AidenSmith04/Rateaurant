@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
+<div id="form">
   <h1>Login to Rateaurant</h1>
   <form id="login_form" method="post" action="{% url 'Rateaurant:login' %}">
 	{%csrf_token %}
