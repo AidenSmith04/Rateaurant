@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load rango_template_tags %}
+
+<html>
+	<head lang="en">
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="Style.css"/>
+		<title>
+		Rango -
+		{% block title_block %}
+			How to Tango with Django!
+		{% endblock %}
+		</title>
+	</head>
+	<body>
+        <div>
+            <h1> Rateaurant </h1>
+        </div>
+		<hr />
+        <div id="Navbar">
+			<ul>
+			{% if user.is_authenticated %}
+				<li><a href="{% url 'Rateaurant:AddARestaurant' %}">Add a Restaurant</a></li>
+			{% else %}
+				<li><a href="{% url 'Rateaurant:register' %}">Register</a></li>
+				<li><a href="{% url 'Rateaurant:login' %}">Login</a></li>
+			{% endif %}
+				<li><a href="{% url 'Rateaurant:home' %}">Home</a></li>
+				<li><a href="{% url 'Rateaurant:categories' %}">All Categories</a></li>
+			</ul>
+		</div>
+        <hr />
+		<div>
+		{% block body_block %}
+		{% endblock %}
+		</div>
+	</body>
+</html>

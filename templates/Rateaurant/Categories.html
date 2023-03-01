@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% extends 'Rateaurant/base.html' %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="Style.css"/>
+</head>
+
+{% block title_block %}
+	All Categories
+{% endblock %}
+
+{% block body_block %}
+<div>
+	<h2> Types of restaurants </h2>
+	{% if categories %}
+	<ul>
+		{% for category in categories %}
+		<li><a href="{{ category.url }}">{{ category.title }}</a></li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<strong>No pages currently in category.</strong>
+	{% endif %}
+</div>
+
+<div>
+	<h2> Favourite Restaurants </h2>
+  {% if favourites %}
+  <ul>
+    {% for favourite in favourites %}
+    <li><a href="{{ restaurant.url }}">{{ category.title }}</a> </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <strong>No favourites yet</strong>
+  {% endif %}
+</div>
+{% endblock %}

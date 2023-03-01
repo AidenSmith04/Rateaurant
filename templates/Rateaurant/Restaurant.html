@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% extends 'Rateaurant/base.html' %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="Style.css"/>
+</head>
+
+{% block title_block %}
+	{% if restaurant %}
+		{{ restaurant.name }}
+	{% else %}
+		Unknown Restaurant
+	{% endif %}
+{% endblock %}
+
+{% block body_block %}
+
+<div>
+  <p>
+      Name: {{ restaurant.name }} <br>
+      Address: {{ restaurant.location }} <br>
+      Category: {{ restaurant.category }} <br>
+      Take-away or Dine-in: {{ restaurant.takeAwayOrDineIn }} <br>
+      Food: {{ restaurant.food }} <br>
+      Service: {{ restaurant.service }} <br>
+      Atmosphere: {{ restaurant.atmosphere }} <br>
+      Price: {{ restaurant.price }} <br>
+  </p>
+</div>
+
+<div>
+  <img src="/media/{{ restaurant.name }}.jpg" alt="Picture of the Restaurant" />
+</div>
+
+<div>
+    Google Maps Goes here
+</div>
+
+<div>
+	<h2> Rate this Restaurant </h2>
+	<form id="rating_form" method="post" action="{% url 'Rateaurant:Restaurant' %">
+			{% csrf_token %}
+			{% for hidden in form.hidden_fields %}
+				{{ hidden}}
+			{% endfor %}
+			{% for field in form.visible_fields %}
+				{{ field.errors }}
+				{{ field.help_text }}
+				{{ field }}
+			{% endfor %}
+			<input type="submit" name="submit" value="Add a Rating" />
+		</form>
+</div>
+
+{% endblock %}

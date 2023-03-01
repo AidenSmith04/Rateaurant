@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% extends 'Rateaurant/base.html' %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="Style.css"/>
+</head>
+
+{% block title_block %}
+	{% if category %}
+		{{ category.name }}
+	{% else %}
+		Unknown Category
+	{% endif %}
+{% endblock %}
+
+{% block body_block %}
+<div>
+	<h2> Restaurants </h2>
+	{% if category %}
+	<ul>
+		{% for restaurant in category %}
+		<li><a href="{{ restaurant.url }}">{{ restaurant.title }}</a></li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	<strong>No restaurants currently in the category</strong>
+	{% endif %}
+</div>
+<div>
+  <img src="/media/{{ category.name}}.jpg" alt="Picture of the category" />
+</div>
+{% endblock %}
