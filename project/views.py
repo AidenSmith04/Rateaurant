@@ -26,6 +26,7 @@ def login(request):
     return response
 
 
+@login_required()
 def add_a_restaurant(request):
     response = render(request, 'Rateaurant/AddARestaurant.html')
     return response
