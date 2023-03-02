@@ -5,7 +5,7 @@ app_name = 'Rateaurant'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('register/', views.NA, name='register'),
-    path('login/', views.NA, name='login'),
-    path('categories/', views.NA, name='categories'),
+    path('categories/', views.categories, name='categories'),
+    path('register/', views.register, name='register'),
+    path('login/', views.login, name='login'),
 ]

@@ -10,6 +10,17 @@ def home(request):
     response = render(request, 'Rateaurant/Home.html')
     return response
 
+def categories(request):
+    response = render(request, 'Rateaurant/Categories.html')
+    return response
+
+def register(request):
+    response = render(request, 'Rateaurant/Register.html')
+    return response
+
+def login(request):
+    response = render(request, 'Rateaurant/Login.html')
+    return response
 
 def NA(request):
     return HttpResponse('never gonna giv u up')
