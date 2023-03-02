@@ -26,3 +26,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('project/', include('project.urls')),
 ]
+
+handler404 = "Rateaurant.views.page_not_found_view"
