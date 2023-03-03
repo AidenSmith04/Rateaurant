@@ -23,6 +23,8 @@ class Owner(models.Model):
 class Restaurant(models.Model):
     restaurant_ID = models.CharField(max_length=30, primary_key=True, unique=True)
     name = models.CharField(max_length=50)
+    address = models.CharField(max_length=50, default="")
+    city = models.CharField(max_length=30, default="")
     postcode = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
     takeaway_option = models.BooleanField(default=True)
