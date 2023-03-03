@@ -8,15 +8,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rateaurant.settings')
 import django
 django.setup()
 from project.models import Customer, Owner, Restaurant, Ownership, Ratings
-import Rateaurant.settings
-
-
-
-
-
-
-
-
 
 def generateID():
     characters = string.ascii_letters + string.digits
@@ -131,8 +122,8 @@ def populate_ratings(restaurants, customer):
             count-=1
     return dict
 
-def add_restraunt(RestaurantID, name, category, postcode, takeaway_option = False):
-    r = Restaurant.objects.get_or_create(restraunt_ID =RestaurantID)[0]
+def add_restaurant(RestaurantID, name, category, postcode, takeaway_option = False):
+    r = Restaurant.objects.get_or_create(restaurant_ID =RestaurantID)[0]
     r.name = name
     r.category = category
     r.postcode = postcode
@@ -141,7 +132,6 @@ def add_restraunt(RestaurantID, name, category, postcode, takeaway_option = Fals
     return r
 
 def add_customer(customerID, username, password, email):
-   
     c = Customer.objects.get_or_create(customer_ID  = customerID)[0]
     c.username = username
     c.password = password
@@ -158,16 +148,13 @@ def add_owner(ownerID, username, password, email):
     return o
 
 def add_ownership(restaurantID, ownerID):
-
     own = Ownership.objects.create(restaurant_ID = restaurantID, owner_ID = ownerID)
-   
     own.save()
     return own
     
     
 def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, favourited, comment):
     rate = Ratings.objects.get_or_create(cust_id = customerID, rest_id = restaurantID,food_Rating = foodRating, service_Rating = serviceRating,atmosphere_Rating = atmosphereRating, price_Rating = priceRating, favourited = favourited,comment = comment)[0]
-
     rate.save()
     return rate
 
@@ -175,8 +162,6 @@ def populate():
     owner = populate_owner()
     customer = populate_customer()
     restaurant = populate_restaurant()
-   
-    
     listowne = []
     listrest = []
     listcust = []
@@ -190,7 +175,7 @@ def populate():
         listowne.append(own)
 
     for restaurants, restaurant_data in restaurant.items():
-        rest =add_restraunt(restaurants, restaurant_data["Name"], restaurant_data["Category"], restaurant_data["PostCode"])
+        rest =add_restaurant(restaurants, restaurant_data["Name"], restaurant_data["Category"], restaurant_data["PostCode"])
         listrest.append(rest)    
     ownership = populate_ownership(listrest, listowne)    
     rating = populate_ratings(listrest, listcust)
