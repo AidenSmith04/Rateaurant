@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block body_block %}
-<div>
+<div id="Leftlist">
 	<h2> Restaurants </h2>
 	{% if category %}
 	<ul>
@@ -27,7 +27,7 @@
 	<strong>No restaurants currently in the category</strong>
 	{% endif %}
 </div>
-<div>
+<div id="image">
   <img src="/media/{{ category.name}}.jpg" alt="Picture of the category" />
 </div>
 {% endblock %}

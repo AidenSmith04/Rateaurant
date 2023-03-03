@@ -14,8 +14,8 @@
 {% if registered %}
 Rango says: <strong>thank you for registering!</strong>
 {% else %}
-<div>
-  <h1>Register as a Viewer for Rateaurant</h1>
+<div id="form">
+  <h1>Register as a Viewer</h1>
   <form id="viewer_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 
 	{% csrf_token %}
@@ -27,8 +27,8 @@ Rango says: <strong>thank you for registering!</strong>
   </form>
 </div>
 
-<div>
-  <h1>Register as an Owner for Rateaurant</h1>
+<div id="form">
+  <h1>Register as an Owner</h1>
   <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 
 	{% csrf_token %}

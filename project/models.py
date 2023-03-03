@@ -11,7 +11,7 @@ class Customer(models.Model):
    
     def __str__(self):
         return self.customer_ID
-    
+
 class Owner(models.Model):
     owner_IDs = models.CharField(max_length=30, primary_key=True, unique=True) 
     username = models.CharField(max_length=30)
@@ -26,7 +26,7 @@ class Restaurant(models.Model):
     postcode = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
     takeaway_option = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.restraunt_ID
 
@@ -37,7 +37,7 @@ class Ownership(models.Model):
         return "%s %s " % (self.restaurant_ID,self.owner_ID)
     
 class Ratings(models.Model):
-   
+
     class Rating_Values(models.IntegerChoices):
         NO_STAR = 0
         ONE_STAR = 1
