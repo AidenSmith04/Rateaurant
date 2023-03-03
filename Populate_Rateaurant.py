@@ -2,6 +2,19 @@ import requests
 import xmltodict
 import random
 import string
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rateaurant.settings')
+
+import django
+django.setup()
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings
+import Rateaurant.settings
+
+
+
+
+
+
 
 
 
@@ -11,12 +24,12 @@ def generateID():
     return ret 
 
 def generatePassword():
-    characters: string.ascii_letters + string.digits + string.punctuation
+    characters= string.ascii_letters + string.digits + string.punctuation
     ret = ''.join(random.choice(characters) for i in range(10))
     return ret
 
  
-def populate_restruant():
+def populate_restaurant():
     url = "https://ratings.food.gov.uk/OpenDataFiles/FHRS776en-GB.xml"
     response = requests.get(url)
     data = xmltodict.parse(response.content)
@@ -75,17 +88,16 @@ def populate_owner():
         dict[generateID()] = {"Username": ownerusername[i], "Password":generatePassword(), "Email":owneremail[i]}
     return dict
         
-def populate_ownership(restruants, owners):
+def populate_ownership(restaurants, owners):
     dict={}
-    list_owner = owners.keys()
-    list_restraunt = restruants.keys()
-    for i in range(len(list_owner)):
-        dict[list_restraunt[i]] = list_owner[i]
+
+    for i in range(len(restaurants)):
+        dict[restaurants[i]] = owners[i]
     return dict 
 
 
     
-def populate_ratings(restraunts, customer):
+def populate_ratings(restaurants, customer):
     dict= {}
     rate = {"Excellent":[("food_rating",5) , ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating",5), ("favourited", True), ("comment","The best restraunt I have ever been to would recommend")],
              "Good":[("food_rating",4), ("service_rating", 4), ("atmosphere_rating", 4), ("price_rating",4), ("favourited", True), ("comment","Good restraunt for a night out")],
@@ -97,31 +109,107 @@ def populate_ratings(restraunts, customer):
             "Complex2":[("food_rating",3), ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating",5), ("favourited", False), ("comment","Wonderful place and people but unfortunalty the food was terrible")],
             "Complex3":[("food_rating",5), ("service_rating", 5), ("atmosphere_rating", 1), ("price_rating",1), ("favourited", False), ("comment","Amazing food and waiters but over  priced and full of snobbish customers")],
             "Complex4":[("food_rating",2), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating",5), ("favourited", False), ("comment","would clarify as a restraunt for students thats the food quality and vibe")]}
-    list_restraunts = restraunts.keys()
-    list_customer = customer.keys()
-    rate_keys = rate.keys()
+ 
+    rate_keys = list(rate.keys())
     count = 0
     reverse = False
     
     
-    for i in range(len(list_restraunts)):
-        if count != len(list_customer)-1 and reverse == False:
+    for i in range(len(restaurants)):
+        if count != len(customer)-1 and reverse == False:
             temp = rate[rate_keys[count]]
-            temp.insert(0, ("RestrauntID",list_restraunts[i]))
-            temp.insert(0,("CustomerID", list_customer[count]))
+            temp.insert(0, ("RestaurantID",restaurants[i]))
+            temp.insert(0,("CustomerID", customer[count]))
             dict[i] = {key: value for (key, value) in temp}
             count+=1
-        elif count == len(list_customer)-1 or reverse ==True:
+        elif count == len(customer)-1 or reverse ==True:
             reverse == True
             temp = rate[rate_keys[count]]
-            temp.insert(0, ("RestrauntID",list_restraunts[i]))
-            temp.insert(0,("CustomerID", list_customer[count]))
+            temp.insert(0, ("RestaurantID",restaurants[i]))
+            temp.insert(0,("CustomerID", customer[count]))
             dict[i] = {key: value for (key, value) in temp}
             count-=1
     return dict
-                
-        
+
+def add_restraunt(RestaurantID, name, category, postcode, takeaway_option = False):
+    r = Restaurant.objects.get_or_create(restraunt_ID =RestaurantID)[0]
+    r.name = name
+    r.category = category
+    r.postcode = postcode
+    r.takeaway_option = takeaway_option
+    r.save()
+    return r
+
+def add_customer(customerID, username, password, email):
+   
+    c = Customer.objects.get_or_create(customer_ID  = customerID)[0]
+    c.username = username
+    c.password = password
+    c.email = email
+    c.save()
+    return c
+
+def add_owner(ownerID, username, password, email):
+    o = Owner.objects.get_or_create(owner_IDs = ownerID)[0]
+    o.username = username
+    o.password = password
+    o.email = email
+    o.save()
+    return o
+
+def add_ownership(restaurantID, ownerID):
+
+    own = Ownership.objects.create(restaurant_ID = restaurantID, owner_ID = ownerID)
+   
+    own.save()
+    return own
     
+    
+def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, favourited, comment):
+    rate = Ratings.objects.get_or_create(cust_id = customerID, rest_id = restaurantID,food_Rating = foodRating, service_Rating = serviceRating,atmosphere_Rating = atmosphereRating, price_Rating = priceRating, favourited = favourited,comment = comment)[0]
+
+    rate.save()
+    return rate
+
+def populate():
+    owner = populate_owner()
+    customer = populate_customer()
+    restaurant = populate_restaurant()
+   
+    
+    listowne = []
+    listrest = []
+    listcust = []
+    for customers, customer_data in customer.items():
+        print(customers)
+        cust =add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"])
+        listcust.append(cust)
+   
+    for owners, owner_data in owner.items():
+        own =add_owner(owners, owner_data["Username"], owner_data["Password"], owner_data["Email"])
+        listowne.append(own)
+
+    for restaurants, restaurant_data in restaurant.items():
+        rest =add_restraunt(restaurants, restaurant_data["Name"], restaurant_data["Category"], restaurant_data["PostCode"])
+        listrest.append(rest)    
+    ownership = populate_ownership(listrest, listowne)    
+    rating = populate_ratings(listrest, listcust)
+    for key, val in ownership.items():
+        print(key)
+        print(val)
+        add_ownership(key, val) 
+    for key, val in rating.items():
+            print(val["food_rating"])
+            add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"],val["price_rating"], val["favourited"], val["comment"])
+     
+       
+    
+if __name__ == '__main__':
+    print('Starting Rango population script...')
+    populate()  
+                    
+               
+               
 
 
 
