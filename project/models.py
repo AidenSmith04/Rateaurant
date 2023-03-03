@@ -40,20 +40,20 @@ class Ownership(models.Model):
     
 class Ratings(models.Model):
 
-    class Rating_Values(models.IntegerChoices):
-        NO_STAR = 0
-        ONE_STAR = 1
-        TWO_STARS = 2
-        THREE_STARS = 3
-        FOUR_STARS = 4
-        FIVE_STARS = 5
-   
+    NO_STAR = 0
+    ONE_STAR = 1
+    TWO_STARS = 2
+    THREE_STARS = 3
+    FOUR_STARS = 4
+    FIVE_STARS = 5
+    RATING_CHOICES = [(NO_STAR, "0"), (ONE_STAR, "1"), (TWO_STARS,"2"), (THREE_STARS, "3"), (FOUR_STARS, "4"), (FIVE_STARS, "5"),]
+    
     cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE, default=1)
     rest_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE, default=1)
-    food_Rating = models.IntegerField(choices=Rating_Values.choices)
-    service_Rating = models.IntegerField(choices=Rating_Values.choices)
-    atmosphere_Rating = models.IntegerField(choices=Rating_Values.choices)
-    price_Rating = models.IntegerField(choices=Rating_Values.choices)
+    food_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
+    service_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
+    atmosphere_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
+    price_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
     favourited = models.BooleanField(default=False)
     comment = models.CharField(max_length=300)
     def __str__(self):
