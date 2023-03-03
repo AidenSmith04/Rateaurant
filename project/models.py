@@ -8,20 +8,20 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.customer_ID
-    
+
 class Owner(models.Model):
-    owner_ID = models.CharField(max_length=30, primary_key=True, unique=True,on_delete = models.CASCADE) 
-    owner = models.OneToOneField(User, on_delete=models.CASCADE) 
+    owner_ID = models.CharField(max_length=30, primary_key=True, unique=True,on_delete = models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.owner_ID
-    
+
 class Restaurant(models.Model):
     restraunt_ID = models.CharField(max_length=30, primary_key=True, unique=True, on_delete= models.CASCADE)
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
     takeaway_option = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.restraunt_ID
 
@@ -30,9 +30,9 @@ class Ownership():
     restraunt_ID = models.ForeignKey(Restaurant)
     def __str__(self):
         return "%s %s " % (self.owner_ID, self.restraunt_ID)
-    
+
 class Ratings(models.Model):
-   
+
     class Rating_Values(models.IntegerChoices):
         NO_STAR = 0
         ONE_STAR = 1
@@ -40,7 +40,7 @@ class Ratings(models.Model):
         THREE_STARS = 3
         FOUR_STARS = 4
         FIVE_STARS = 5
-   
+
     customer_Id = models.ManyToManyField(Customer)
     restraunt_ID = models.ManyToManyField(Restaurant)
     food_Rating = models.IntegerField(choices=Rating_Values.choices)
