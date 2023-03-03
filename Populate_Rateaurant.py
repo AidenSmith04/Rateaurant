@@ -38,10 +38,7 @@ def populate_restaurant():
     for i in range(len(ret)):
      temp_list = ret[i].keys()
      if ret[i]["BusinessName"] in wanted and "PostCode" in temp_list and ret[i]["BusinessType"] != "Takeaway/sandwich shop":
-    
-              
                 dict[generateID()] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"], "PostCode": ret[i]["PostCode"]}
-                
                 wanted.remove(ret[i]["BusinessName"])
 
     for key in dict.keys():
@@ -57,8 +54,6 @@ def populate_restaurant():
             dict[key]["Category"] = "Grill"
         elif(dict[key]["Name"] in contemprary):
             dict[key]["Category"] = "contemporary"
-        print(dict[key])
-        print("\n")
     return dict
     
 
@@ -81,7 +76,6 @@ def populate_owner():
         
 def populate_ownership(restaurants, owners):
     dict={}
-
     for i in range(len(restaurants)):
         dict[restaurants[i]] = owners[i]
     return dict 
@@ -102,24 +96,20 @@ def populate_ratings(restaurants, customer):
             "Complex4":[("food_rating",2), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating",5), ("favourited", False), ("comment","would clarify as a restraunt for students thats the food quality and vibe")]}
  
     rate_keys = list(rate.keys())
-    count = 0
-    reverse = False
-    
-    
+    count = 9
+ 
     for i in range(len(restaurants)):
-        if count != len(customer)-1 and reverse == False:
+        if i<=9:
+            temp = rate[rate_keys[i]]
+            temp.insert(0, ("RestaurantID",restaurants[i]))
+            temp.insert(0,("CustomerID", customer[i]))
+            dict[i] = {key: value for (key, value) in temp}     
+        elif i>9:
             temp = rate[rate_keys[count]]
             temp.insert(0, ("RestaurantID",restaurants[i]))
             temp.insert(0,("CustomerID", customer[count]))
             dict[i] = {key: value for (key, value) in temp}
-            count+=1
-        elif count == len(customer)-1 or reverse ==True:
-            reverse == True
-            temp = rate[rate_keys[count]]
-            temp.insert(0, ("RestaurantID",restaurants[i]))
-            temp.insert(0,("CustomerID", customer[count]))
-            dict[i] = {key: value for (key, value) in temp}
-            count-=1
+            count-=1        
     return dict
 
 def add_restaurant(RestaurantID, name, category, postcode, takeaway_option = False):
@@ -140,7 +130,7 @@ def add_customer(customerID, username, password, email):
     return c
 
 def add_owner(ownerID, username, password, email):
-    o = Owner.objects.get_or_create(owner_IDs = ownerID)[0]
+    o = Owner.objects.get_or_create(owner_ID = ownerID)[0]
     o.username = username
     o.password = password
     o.email = email
@@ -148,7 +138,7 @@ def add_owner(ownerID, username, password, email):
     return o
 
 def add_ownership(restaurantID, ownerID):
-    own = Ownership.objects.create(restaurant_ID = restaurantID, owner_ID = ownerID)
+    own = Ownership.objects.get_or_create(restaurant_ID = restaurantID, owner_ID = ownerID)[0]
     own.save()
     return own
     
@@ -166,7 +156,6 @@ def populate():
     listrest = []
     listcust = []
     for customers, customer_data in customer.items():
-        print(customers)
         cust =add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"])
         listcust.append(cust)
    
@@ -177,21 +166,22 @@ def populate():
     for restaurants, restaurant_data in restaurant.items():
         rest =add_restaurant(restaurants, restaurant_data["Name"], restaurant_data["Category"], restaurant_data["PostCode"])
         listrest.append(rest)    
+        
     ownership = populate_ownership(listrest, listowne)    
     rating = populate_ratings(listrest, listcust)
+    
     for key, val in ownership.items():
-        print(key)
-        print(val)
         add_ownership(key, val) 
+    
     for key, val in rating.items():
-            print(val["food_rating"])
             add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"],val["price_rating"], val["favourited"], val["comment"])
      
        
     
 if __name__ == '__main__':
-    print('Starting Rango population script...')
+    print('Starting Rateaurant population script...')
     populate()  
+    print("....Finished population script ")
                     
                
                
@@ -199,5 +189,3 @@ if __name__ == '__main__':
 
 
 
-
-##{Ratingnum: {CustomerID:val, restrauntID:val, food_rating:val, service_rating:val, atmosphere_rating:val, price_rating:val, favourited:val, comment:val}}
