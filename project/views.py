@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from project.models import Restaurant
+from project.models import Restaurant, Owner
 from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories
 from Populate_Rateaurant import generateID
 
@@ -32,7 +32,6 @@ def show_category(request, category_name):
 
 
 def show_venue(request, category_name, venue_id):
-    print(999)
     context_dict = {}
     try:
 
@@ -64,14 +63,12 @@ def register(request):
                 customer.customer_ID = generateID()
                 customer.user = user
                 customer.save()
-
                 registered = True
             elif owner_form.is_valid():
                 owner = owner_form.save(commit=False)
                 owner.owner_ID = generateID()
                 owner.user = user
                 owner.save()
-
                 registered = True
         if not registered:
             print(user_form.errors, customer_form.errors, owner_form.errors)
@@ -117,6 +114,7 @@ def add_a_restaurant(request):
         if restaurant_form.is_valid():
             restaurant = restaurant_form.save(commit=False)
             restaurant.restaurant_ID = generateID()
+            restaurant.owner_ID = Owner.objects.get(user=request.user).owner_ID
             restaurant.save()
             return redirect(reverse('Rateaurant:home'))
     else:
