@@ -113,18 +113,19 @@ def add_a_restaurant(request):
     if request.method == 'POST':
         restaurant_form = RestaurantForm(request.POST)
         ownership_form = OwnershipForm(request.POST)
-
+        print('hi')
         if restaurant_form.is_valid() and ownership_form.is_valid():
             restaurant_id = generateID()
-            print(Owner.objects.get(user=request.user).owner_ID)
-            ownership = ownership_form.save(commit=False)
-            ownership.restaurant_ID = restaurant_id
-            ownership.owner_ID = Owner.objects.get(user=request.user).owner_ID
-            ownership.save()
 
             restaurant = restaurant_form.save(commit=False)
             restaurant.restaurant_ID = restaurant_id
             restaurant.save()
+
+            ownership = ownership_form.save(commit=False)
+            ownership.restaurant_ID = restaurant
+            ownership.owner_ID = Owner.objects.get(user=request.user) #Owner.objects.get(user=request.user).owner_ID
+            ownership.save()
+
             return redirect(reverse('Rateaurant:home'))
         else:
             print(restaurant_form.errors, ownership_form.errors)

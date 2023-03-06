@@ -53,4 +53,4 @@ class OwnershipForm(forms.ModelForm):
 
     class Meta:
         model = Ownership
-        fields = ('owner_ID', 'restaurant_ID')
+        exclude = ('owner_ID', 'restaurant_ID')

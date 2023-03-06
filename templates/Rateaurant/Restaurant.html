@@ -40,7 +40,7 @@
 <div id="form">
 	<hr />
 	<h2> Rate this Restaurant </h2>
-	<form id="rating_form" method="post" action="{% url 'Rateaurant:Restaurant' %">
+	<form id="rating_form" method="post" action="{% url 'Rateaurant:Restaurant' %}">
 			{% csrf_token %}
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}
