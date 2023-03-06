@@ -2,7 +2,7 @@
 {% extends 'Rateaurant/base.html' %}
 {% load staticfiles %}
 
-<head>
+<head xmlns="http://www.w3.org/1999/html">
 	<link rel="stylesheet" href="Style.css"/>
 </head>
 
@@ -14,28 +14,14 @@
 	{% if registered %}
 		Rango says: <strong>thank you for registering!</strong>
 	{% else %}
-
-		<div id="form">
-		  <h1>Register as a Customer</h1>
-		  <form id="viewer_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
-
-			{% csrf_token %}
-			{{ user_form.as_p }}
-			{{ customer_form.as_p }}
-
-			<input type="submit" name="submit" value="Register" />
-		  </form>
-		</div>
-
 		<div id="form">
 		  <h1>Register as an Owner</h1>
 		  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
-
 			{% csrf_token %}
-
 			{{ user_form.as_p }}
-			{{ owner_form.as_p }}
 
+			E-mail: <input type="email" name="email" value='' /></br>
+			Register as Restaurant Owner: <input type="checkbox" name="as_owner" value="Register as Restaurant Owner" /></br>
 			<input type="submit" name="submit" value="Register" />
 		  </form>
 		</div>

@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from project.models import Restaurant, Owner
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
 from Populate_Rateaurant import generateID
 
 
@@ -48,28 +48,32 @@ def register(request):
     registered = False
 
     if request.method == 'POST':
+        as_owner = request.POST.get('as_owner')
+        email = request.POST.get('email')
         user_form = UserForm(request.POST)
         customer_form = CustomerForm(request.POST)
         owner_form = OwnerForm(request.POST)
 
-        if user_form.is_valid() and (customer_form.is_valid() or owner_form.is_valid()):
+        if user_form.is_valid() and customer_form.is_valid() and owner_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user.password)
             user.save()
             login(request, user)
-
-            if customer_form.is_valid():
-                customer = customer_form.save(commit=False)
-                customer.customer_ID = generateID()
-                customer.user = user
-                customer.save()
-                registered = True
-            elif owner_form.is_valid():
+            if as_owner:
                 owner = owner_form.save(commit=False)
                 owner.owner_ID = generateID()
+                owner.email = email
                 owner.user = user
                 owner.save()
-                registered = True
+                print('MWAHAHAHA')
+            else:
+                customer = customer_form.save(commit=False)
+                customer.customer_ID = generateID()
+                customer.email = email
+                customer.user = user
+                customer.save()
+                print('uwu')
+            registered = True
         if not registered:
             print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
@@ -79,8 +83,6 @@ def register(request):
 
     context = {
         'user_form': user_form,
-        'customer_form': customer_form,
-        'owner_form': owner_form,
         'registered': registered
     }
 
@@ -110,13 +112,22 @@ def login_user(request):
 def add_a_restaurant(request):
     if request.method == 'POST':
         restaurant_form = RestaurantForm(request.POST)
+        ownership_form = OwnershipForm(request.POST)
 
-        if restaurant_form.is_valid():
+        if restaurant_form.is_valid() and ownership_form.is_valid():
+            restaurant_id = generateID()
+            print(Owner.objects.get(user=request.user).owner_ID)
+            ownership = ownership_form.save(commit=False)
+            ownership.restaurant_ID = restaurant_id
+            ownership.owner_ID = Owner.objects.get(user=request.user).owner_ID
+            ownership.save()
+
             restaurant = restaurant_form.save(commit=False)
-            restaurant.restaurant_ID = generateID()
-            restaurant.owner_ID = Owner.objects.get(user=request.user).owner_ID
+            restaurant.restaurant_ID = restaurant_id
             restaurant.save()
             return redirect(reverse('Rateaurant:home'))
+        else:
+            print(restaurant_form.errors, ownership_form.errors)
     else:
         restaurant_form = RestaurantForm()
 

@@ -1,5 +1,5 @@
 from django import forms
-from project.models import Customer, Owner, Restaurant
+from project.models import Customer, Owner, Restaurant, Ownership
 from django.contrib.auth.models import User
 
 Categories = {
@@ -47,3 +47,10 @@ class OwnerForm(forms.ModelForm):
     class Meta:
         model = Owner
         fields = ('email',)
+
+
+class OwnershipForm(forms.ModelForm):
+
+    class Meta:
+        model = Ownership
+        fields = ('owner_ID', 'restaurant_ID')

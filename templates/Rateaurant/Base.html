@@ -24,6 +24,7 @@
 			{% if user.is_authenticated %}
 				<li><a href="{% url 'Rateaurant:addarestaurant' %}">Add a Restaurant</a></li>
 				<li><a href="{% url 'Rateaurant:logout' %}">Logout</a></li>
+				<li><a href="">Welcome, {{ user }}</a></li></li>
 			{% else %}
 				<li><a href="{% url 'Rateaurant:register' %}">Register</a></li>
 				<li><a href="{% url 'Rateaurant:login' %}">Login</a></li>
