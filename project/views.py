@@ -27,30 +27,60 @@ def register(request):
         customer_form = CustomerForm(request.POST)
         owner_form = OwnerForm(request.POST)
 
-        if customer_form.is_valid():
-            customer = customer_form.save(commit=False)
-            customer.customer_ID = generateID()
-            login(request.P)
-            registered = True
-        elif owner_form.is_valid():
-            owner = owner_form.save(commit=False)
-            owner.owner_ID = generateID()
-            owner.save()
+        if user_form.is_valid() and (customer_form.is_valid() or owner_form.is_valid()):
+            user = user_form.save(commit=False)
+            user.set_password(user.password)
+            user.save()
+            login(request, user)
 
-            registered = True
+            if customer_form.is_valid():
+                customer = customer_form.save(commit=False)
+                customer.customer_ID = generateID()
+                customer.user = user
+                customer.save()
+
+                registered = True
+            elif owner_form.is_valid():
+                owner = owner_form.save(commit=False)
+                owner.owner_ID = generateID()
+                owner.user = user
+                owner.save()
+
+                registered = True
         else:
-            print(customer_form.errors, owner_form.errors)
+            print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
+        user_form = UserForm()
         customer_form = CustomerForm()
         owner_form = OwnerForm()
 
-    context = {'customer_form': customer_form, 'owner_form': owner_form, 'registered': registered}
+    context = {
+        'user_form': user_form,
+        'customer_form': customer_form,
+        'owner_form': owner_form,
+        'registered': registered
+    }
+
     return render(request, 'Rateaurant/Register.html', context=context)
 
 
-def login(request):
-    response = render(request, 'Rateaurant/Login.html')
-    return response
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                login(request, user)
+                return redirect(reverse('Rateaurant:home'))
+            else:
+                return HttpResponse("Your Rateaurant account is disabled.")
+        else:
+            print(f"Invalid login details: {username}, {password}")
+            return HttpResponse("Invalid login details supplied.")
+    else:
+        return render(request, 'Rateaurant/Login.html')
 
 
 @login_required()
@@ -59,5 +89,6 @@ def add_a_restaurant(request):
     return response
 
 
-def na(request):
-    return HttpResponse('never gonna giv u up')
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('Rateaurant:home'))

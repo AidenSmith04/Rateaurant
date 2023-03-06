@@ -26,12 +26,16 @@ class UserForm(forms.ModelForm):
 
 
 class CustomerForm(forms.ModelForm):
+    email = forms.EmailField()
+
     class Meta:
         model = Customer
-        fields = ('username', 'password',)
+        fields = ('email',)
 
 
 class OwnerForm(forms.ModelForm):
+    email = forms.EmailField()
+
     class Meta:
         model = Owner
-        fields = ('username', 'password',)
+        fields = ('email',)

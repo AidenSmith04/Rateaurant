@@ -14,12 +14,13 @@
 	{% if registered %}
 		Rango says: <strong>thank you for registering!</strong>
 	{% else %}
+
 		<div id="form">
 		  <h1>Register as a Customer</h1>
 		  <form id="viewer_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 
 			{% csrf_token %}
-
+			{{ user_form.as_p }}
 			{{ customer_form.as_p }}
 
 			<input type="submit" name="submit" value="Register" />
@@ -32,6 +33,7 @@
 
 			{% csrf_token %}
 
+			{{ user_form.as_p }}
 			{{ owner_form.as_p }}
 
 			<input type="submit" name="submit" value="Register" />
