@@ -5,20 +5,19 @@ from django.contrib.auth.models import User
 # Create your models here
 class Customer(models.Model):
     customer_ID = models.CharField(max_length=30, primary_key=True, unique=True)
-    user = models.OneToOneField(User, primary_key=False,  on_delete=models.CASCADE)
-    
+    user = models.OneToOneField(User, primary_key=False, on_delete=models.CASCADE)
+
     email = models.CharField(max_length=50)
-    
 
     def __str__(self):
         return self.customer_ID
 
 
 class Owner(models.Model):
-    owner_ID = models.CharField(max_length=30,primary_key=True, unique=True)
+    owner_ID = models.CharField(max_length=30, primary_key=True, unique=True)
 
-    user = models.OneToOneField(User,primary_key= False, on_delete=models.CASCADE)
-    
+    user = models.OneToOneField(User, primary_key=False, on_delete=models.CASCADE)
+
     email = models.CharField(max_length=50)
 
     def __str__(self):

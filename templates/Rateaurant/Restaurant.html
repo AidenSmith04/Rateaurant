@@ -7,7 +7,7 @@
 </head>
 
 {% block title_block %}
-	{% if restaurant %}
+	{% if venue %}
 		{{ restaurant.name }}
 	{% else %}
 		Unknown Restaurant
@@ -18,14 +18,14 @@
 
 <div id="Leftlist">
   <p>
-      Name: {{ restaurant.name }} <br>
-      Address: {{ restaurant.location }} <br>
-      Category: {{ restaurant.category }} <br>
-      Take-away or Dine-in: {{ restaurant.takeAwayOrDineIn }} <br>
-      Food: {{ restaurant.food }} <br>
-      Service: {{ restaurant.service }} <br>
-      Atmosphere: {{ restaurant.atmosphere }} <br>
-      Price: {{ restaurant.price }} <br>
+      Name: {{ venue.name }} <br>
+      Address: {{ venue.address }} <br>
+      Category: {{ venue.category }} <br>
+      Take-away or Dine-in: {{ venue.takeaway_option }} <br>
+      Food: {{ venue.food }} <br>
+      Service: {{ venue.service }} <br>
+      Atmosphere: {{ venue.atmosphere }} <br>
+      Price: {{ venue.price }} <br>
   </p>
 </div>
 
