@@ -4,13 +4,14 @@ import random
 import string
 import os
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rateaurant.settings')
 
 import django
 
 django.setup()
 from project.models import Customer, Owner, Restaurant, Ownership, Ratings
-
+from django.contrib.auth.models import User
 
 def generateID():
     characters = string.ascii_letters + string.digits
@@ -159,20 +160,22 @@ def add_restaurant(RestaurantID, name, category, address, city, postcode, takeaw
     return r
 
 
-def add_customer(customerID, username, password, email):
-    c = Customer.objects.get_or_create(customer_ID=customerID)[0]
-    c.username = username
-    c.password = password
-    c.email = email
+def add_customer(customerID, username, password, email, id):
+    
+    user = User(username = username, email = email)
+    user.set_password(password)
+    user.save()
+    c = Customer.objects.get_or_create(customer_ID = customerID, user = user)[0]
+ 
     c.save()
     return c
 
 
 def add_owner(ownerID, username, password, email):
-    o = Owner.objects.get_or_create(owner_ID=ownerID)[0]
-    o.username = username
-    o.password = password
-    o.email = email
+    owner = User(username = username, email = email)
+    owner.set_password(password)
+    owner.save()
+    o = Owner.objects.get_or_create(owner_ID = ownerID, user = owner)[0]
     o.save()
     return o
 
@@ -199,8 +202,10 @@ def populate():
     listowne = []
     listrest = []
     listcust = []
+    count = 0
     for customers, customer_data in customer.items():
-        cust = add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"])
+        count+=1
+        cust = add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"], count)
         listcust.append(cust)
 
     for owners, owner_data in owner.items():
