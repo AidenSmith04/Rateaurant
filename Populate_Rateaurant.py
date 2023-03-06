@@ -65,7 +65,7 @@ def populate_restaurant():
         elif (dict[key]["Name"] in grill):
             dict[key]["Category"] = "Grill"
         elif (dict[key]["Name"] in contemprary):
-            dict[key]["Category"] = "contemporary"
+            dict[key]["Category"] = "Contemporary"
     return dict
 
 
