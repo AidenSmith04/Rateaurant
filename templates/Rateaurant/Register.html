@@ -11,34 +11,33 @@
 {% endblock %}
 
 {%block body_block %}
-{% if registered %}
-Rango says: <strong>thank you for registering!</strong>
-{% else %}
-<div id="form">
-  <h1>Register as a Viewer</h1>
-  <form id="viewer_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
+	{% if registered %}
+		Rango says: <strong>thank you for registering!</strong>
+	{% else %}
 
-	{% csrf_token %}
+		<div id="form">
+		  <h1>Register as a Customer</h1>
+		  <form id="viewer_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 
-	{{ user_form.as_p }}
-	{{ profile_form.as_p }}
+			{% csrf_token %}
+			{{ user_form.as_p }}
+			{{ customer_form.as_p }}
 
-	<input type="submit" name="submit" value="Register" />
-  </form>
-</div>
+			<input type="submit" name="submit" value="Register" />
+		  </form>
+		</div>
 
-<div id="form">
-  <h1>Register as an Owner</h1>
-  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
+		<div id="form">
+		  <h1>Register as an Owner</h1>
+		  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 
-	{% csrf_token %}
+			{% csrf_token %}
 
-	{{ user_form.as_p }}
-	{{ profile_form.as_p }}
+			{{ user_form.as_p }}
+			{{ owner_form.as_p }}
 
-	<input type="submit" name="submit" value="Register" />
-  </form>
-</div>
-
-{% endif %}
+			<input type="submit" name="submit" value="Register" />
+		  </form>
+		</div>
+	{% endif %}
 {% endblock %}
