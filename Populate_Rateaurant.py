@@ -38,7 +38,7 @@ def populate_restaurant():
     for i in range(len(ret)):
      temp_list = ret[i].keys()
      if ret[i]["BusinessName"] in wanted and "PostCode" in temp_list and ret[i]["BusinessType"] != "Takeaway/sandwich shop":
-                dict[generateID()] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"], "PostCode": ret[i]["PostCode"]}
+                dict[generateID()] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"],"Address":ret[i]["AddressLine2"], "City":ret[i]["AddressLine3"], "PostCode": ret[i]["PostCode"]}
                 wanted.remove(ret[i]["BusinessName"])
 
     for key in dict.keys():
@@ -112,10 +112,12 @@ def populate_ratings(restaurants, customer):
             count-=1        
     return dict
 
-def add_restaurant(RestaurantID, name, category, postcode, takeaway_option = False):
+def add_restaurant(RestaurantID, name, category,address,city, postcode, takeaway_option = False):
     r = Restaurant.objects.get_or_create(restaurant_ID =RestaurantID)[0]
     r.name = name
     r.category = category
+    r.address = address
+    r.city = city
     r.postcode = postcode
     r.takeaway_option = takeaway_option
     r.save()
@@ -164,7 +166,7 @@ def populate():
         listowne.append(own)
 
     for restaurants, restaurant_data in restaurant.items():
-        rest =add_restaurant(restaurants, restaurant_data["Name"], restaurant_data["Category"], restaurant_data["PostCode"])
+        rest =add_restaurant(restaurants, restaurant_data["Name"], restaurant_data["Category"],restaurant_data["Address"], restaurant_data["City"], restaurant_data["PostCode"])
         listrest.append(rest)    
         
     ownership = populate_ownership(listrest, listowne)    

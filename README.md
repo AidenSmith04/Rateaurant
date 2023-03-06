@@ -11,8 +11,8 @@ Aiden:
 - CSS Styling
 
 Joshua:
-- Finalise Models
-- Populations script
+- Models.py
+- Populate_Rateaurant.py
 
 Sami:
 - Views.py
