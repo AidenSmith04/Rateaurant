@@ -15,11 +15,8 @@ class Customer(models.Model):
 
 
 class Owner(models.Model):
-    owner_ID = models.CharField(max_length=30, primary_key=True, unique=True)
-
-    user = models.OneToOneField(User, primary_key=False, on_delete=models.CASCADE)
-
-    email = models.CharField(max_length=50)
+    owner_ID = models.CharField(max_length=30,primary_key=True, unique=True)
+    user = models.OneToOneField(User,primary_key= False, on_delete=models.CASCADE)
     
 
     def __str__(self):

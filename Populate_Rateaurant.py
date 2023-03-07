@@ -48,7 +48,7 @@ def populate_restaurant():
         temp_list = ret[i].keys()
         if ret[i]["BusinessName"] in wanted and "PostCode" in temp_list and ret[i][
             "BusinessType"] != "Takeaway/sandwich shop":
-            dict[generateID()] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"],
+            dict[str(i*45)] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"],
                                   "Address": ret[i]["AddressLine2"], "City": ret[i]["AddressLine3"],
                                   "PostCode": ret[i]["PostCode"]}
             wanted.remove(ret[i]["BusinessName"])
@@ -76,7 +76,7 @@ def populate_customer():
                      "keyGreen@mail", "CraneC@mail", "sunsetty@mail.com", "joey@mail.com", "Burpy@mail.com"]
     dict = {}
     for i in range(len(customerusername)):
-        dict[generateID()] = {"Username": customerusername[i], "Password": generatePassword(),
+        dict[str(i)] = {"Username": customerusername[i], "Password": "PASSW0RD",
                               "Email": customerEmail[i]}
     return dict
 
@@ -92,7 +92,7 @@ def populate_owner():
                   "owner2@mail.com"]
     dict = {}
     for i in range(len(ownerusername)):
-        dict[generateID()] = {"Username": ownerusername[i], "Password": generatePassword(), "Email": owneremail[i]}
+        dict[str(i*33)] = {"Username": ownerusername[i], "Password": "PASSW0RD", "Email": owneremail[i]}
     return dict
 
 
