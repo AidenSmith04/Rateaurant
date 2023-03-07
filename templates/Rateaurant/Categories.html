@@ -16,24 +16,24 @@
 	{% if categories %}
 	<ul>
 		{% for category in categories %}
-		<li><a href="{{ category.url }}">{{ category.title }}</a></li>
+			<li><a href="{% url 'Rateaurant:show_category' category.1 %}">{{ category.1 }}</a></li>
 		{% endfor %}
 	</ul>
 	{% else %}
-	<strong>No pages currently in category.</strong>
+		<strong>No pages currently in category.</strong>
 	{% endif %}
 </div>
 
 <div id="Rightlist">
 	<h2> Favourite Restaurants </h2>
-  {% if favourites %}
-  <ul>
-    {% for favourite in favourites %}
-    <li><a href="{{ restaurant.url }}">{{ category.title }}</a> </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <strong>No favourites yet</strong>
-  {% endif %}
+	{% if favourites %}
+		<ul>
+		{% for favourite in favourites %}
+			<li><a href="{{ restaurant.url }}">{{ category.title }}</a> </li>
+		{% endfor %}
+		</ul>
+  	{% else %}
+		<strong>No favourites yet</strong>
+  	{% endif %}
 </div>
 {% endblock %}

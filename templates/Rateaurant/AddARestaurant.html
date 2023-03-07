@@ -12,17 +12,10 @@
 
 {% block body_block %}
 	<div id="form">
-		<h1>Add a Category</h1>
-		<form id="restaurant_form" method="post" action="{% url 'Rateaurant:AddARestaurant' %">
+		<h1>Add a Restaurant</h1>
+		<form id="restaurant_form" method="post" action="{% url 'Rateaurant:addarestaurant' %}">
 			{% csrf_token %}
-			{% for hidden in form.hidden_fields %}
-				{{ hidden}}
-			{% endfor %}
-			{% for field in form.visible_fields %}
-				{{ field.errors }}
-				{{ field.help_text }}
-				{{ field }}
-			{% endfor %}
+			{{ restaurant_form.as_p }}
 			<input type="submit" name="submit" value="Create Restaurant" />
 		</form>
 	</div>

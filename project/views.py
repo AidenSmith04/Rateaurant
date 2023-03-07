@@ -4,50 +4,87 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from project.models import Restaurant
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm
+from django.db.models import Avg, F
+from project.models import Restaurant, Owner, Ratings
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
 from Populate_Rateaurant import generateID
+
+rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
 
 
 def home(request):
-    response = render(request, 'Rateaurant/Home.html')
+    means = Ratings.objects.annotate(
+        avg=(F('food_Rating')+F('service_Rating')+F('atmosphere_Rating')+F('price_Rating'))/4)
+
+    context_dict = {
+        'top_venues': means.order_by('-avg').values('rest_id', 'avg')
+    }
+    print(context_dict['top_venues'])
+    response = render(request, 'Rateaurant/Home.html', context=context_dict)
     return response
 
 
 def categories(request):
-    response = render(request, 'Rateaurant/Categories.html')
+    response = render(request, 'Rateaurant/Categories.html', context={'categories': Categories})
     return response
+
+
+def show_category(request, category_name):
+    context_dict = {}
+    try:
+        venues = Restaurant.objects.filter(category=category_name)
+        context_dict['venues'] = venues
+
+    except Restaurant.DoesNotExist:
+        context_dict['venues'] = None
+
+    return render(request, 'Rateaurant/Category.html', context=context_dict)
+
+
+def show_venue(request, category_name, venue_id):
+    context_dict = {}
+    try:
+        venue = Restaurant.objects.get(restaurant_ID=venue_id)
+        context_dict['venue'] = venue
+
+        for rating_type in rating_types:
+            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[rating_type+'__avg']
+
+    except Restaurant.DoesNotExist:
+        context_dict['venue'] = None
+
+    return render(request, 'Rateaurant/Restaurant.html', context=context_dict)
 
 
 def register(request):
     registered = False
 
     if request.method == 'POST':
+        as_owner = request.POST.get('as_owner')
+        email = request.POST.get('email')
         user_form = UserForm(request.POST)
         customer_form = CustomerForm(request.POST)
         owner_form = OwnerForm(request.POST)
 
-        if user_form.is_valid() and (customer_form.is_valid() or owner_form.is_valid()):
+        if user_form.is_valid() and customer_form.is_valid() and owner_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user.password)
             user.save()
             login(request, user)
-
-            if customer_form.is_valid():
-                customer = customer_form.save(commit=False)
-                customer.customer_ID = generateID()
-                customer.user = user
-                customer.save()
-
-                registered = True
-            elif owner_form.is_valid():
+            if as_owner:
                 owner = owner_form.save(commit=False)
                 owner.owner_ID = generateID()
+                owner.email = email
                 owner.user = user
                 owner.save()
-
-                registered = True
-        else:
+            else:
+                customer = customer_form.save(commit=False)
+                customer.customer_ID = generateID()
+                customer.email = email
+                customer.user = user
+                customer.save()
+            registered = True
+        if not registered:
             print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
         user_form = UserForm()
@@ -56,8 +93,6 @@ def register(request):
 
     context = {
         'user_form': user_form,
-        'customer_form': customer_form,
-        'owner_form': owner_form,
         'registered': registered
     }
 
@@ -85,8 +120,29 @@ def login_user(request):
 
 @login_required()
 def add_a_restaurant(request):
-    response = render(request, 'Rateaurant/AddARestaurant.html')
-    return response
+    if request.method == 'POST':
+        restaurant_form = RestaurantForm(request.POST)
+        ownership_form = OwnershipForm(request.POST)
+        print('hi')
+        if restaurant_form.is_valid() and ownership_form.is_valid():
+            restaurant_id = generateID()
+
+            restaurant = restaurant_form.save(commit=False)
+            restaurant.restaurant_ID = restaurant_id
+            restaurant.save()
+
+            ownership = ownership_form.save(commit=False)
+            ownership.restaurant_ID = restaurant
+            ownership.owner_ID = Owner.objects.get(user=request.user) #Owner.objects.get(user=request.user).owner_ID
+            ownership.save()
+
+            return redirect(reverse('Rateaurant:home'))
+        else:
+            print(restaurant_form.errors, ownership_form.errors)
+    else:
+        restaurant_form = RestaurantForm()
+
+    return render(request, 'Rateaurant/AddARestaurant.html', context={'restaurant_form': restaurant_form})
 
 
 def user_logout(request):

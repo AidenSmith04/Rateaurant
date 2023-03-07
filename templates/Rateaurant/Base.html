@@ -8,7 +8,7 @@
 		<title>
 		Rango -
 		{% block title_block %}
-			How to Tango with Django!
+			Rateaurant
 		{% endblock %}
 		</title>
 	</head>
@@ -21,13 +21,16 @@
 			<ul>
 				<li><a href="{% url 'Rateaurant:home' %}">Home</a></li>
 				<li><a href="{% url 'Rateaurant:categories' %}">All Categories</a></li>
-			{% if user.is_authenticated %}
-				<li><a href="{% url 'Rateaurant:addarestaurant' %}">Add a Restaurant</a></li>
+				{% if user.is_authenticated %}
+				{%if user.owner %}
+					<li><a href="{% url 'Rateaurant:addarestaurant' %}">Add a Restaurant</a></li>
+				{% endif %}
 				<li><a href="{% url 'Rateaurant:logout' %}">Logout</a></li>
-			{% else %}
-				<li><a href="{% url 'Rateaurant:register' %}">Register</a></li>
-				<li><a href="{% url 'Rateaurant:login' %}">Login</a></li>
-			{% endif %}
+				<li><a href="">Welcome, {{ user }}</a></li></li>
+				{% else %}
+					<li><a href="{% url 'Rateaurant:register' %}">Register</a></li>
+					<li><a href="{% url 'Rateaurant:login' %}">Login</a></li>
+				{% endif %}
 			</ul>
 		</div>
         <hr />
