@@ -18,7 +18,7 @@
 		<ul>
 		{% for venue in top_venues %}
 			<li>
-				<a href="">{{ venue.rest_id }} {{ venue.avg }}</a>
+				<a href="{% url 'Rateaurant:show_venue' venue.category venue.rest_id %}">{{ venue.name }}</a>
 			</li>
 		{% endfor %}
 		</ul>

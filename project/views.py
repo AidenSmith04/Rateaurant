@@ -14,12 +14,18 @@ rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rat
 
 def home(request):
     means = Ratings.objects.annotate(
-        avg=(F('food_Rating')+F('service_Rating')+F('atmosphere_Rating')+F('price_Rating'))/4)
+        avg=(F('food_Rating') + F('service_Rating') + F('atmosphere_Rating') + F('price_Rating')) / 4)
 
-    context_dict = {
-        'top_venues': means.order_by('-avg').values('rest_id', 'avg')
-    }
-    print(context_dict['top_venues'])
+    context_dict = {}
+    top_venues = [x for x in means.order_by('-avg').values('rest_id', 'avg')]
+
+    for i in range(0, 10):
+        query = Restaurant.objects.get(restaurant_ID=top_venues[i]['rest_id'])
+        top_venues[i]['name'] = query.name
+        top_venues[i]['category'] = query.category
+
+    context_dict = {'top_venues': top_venues}
+
     response = render(request, 'Rateaurant/Home.html', context=context_dict)
     return response
 
@@ -48,7 +54,8 @@ def show_venue(request, category_name, venue_id):
         context_dict['venue'] = venue
 
         for rating_type in rating_types:
-            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[rating_type+'__avg']
+            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[
+                rating_type + '__avg']
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
@@ -133,7 +140,7 @@ def add_a_restaurant(request):
 
             ownership = ownership_form.save(commit=False)
             ownership.restaurant_ID = restaurant
-            ownership.owner_ID = Owner.objects.get(user=request.user) #Owner.objects.get(user=request.user).owner_ID
+            ownership.owner_ID = Owner.objects.get(user=request.user)  # Owner.objects.get(user=request.user).owner_ID
             ownership.save()
 
             return redirect(reverse('Rateaurant:home'))
