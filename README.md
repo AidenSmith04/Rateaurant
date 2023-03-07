@@ -1,7 +1,9 @@
 # Rateaurant
 
 Make sure to imput the following commands in the command prompt:
+
 pip install requests
+
 pip install xmltodict
 
 If you get a table doesnt exist error:
