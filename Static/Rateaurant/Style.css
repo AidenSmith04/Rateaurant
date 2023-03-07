@@ -28,7 +28,7 @@ li {
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 16px 130px;
     text-decoration: none;
     }
 
@@ -66,6 +66,7 @@ li {
 #form {
     clear: both;
     text-align: center;
+    font-size: 20px;
 }
 
 #restaurantlist {
