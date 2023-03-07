@@ -4,14 +4,23 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.db.models import Avg
+from django.db.models import Avg, F
 from project.models import Restaurant, Owner, Ratings
 from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
 from Populate_Rateaurant import generateID
 
+rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
+
 
 def home(request):
-    response = render(request, 'Rateaurant/Home.html')
+    means = Ratings.objects.annotate(
+        avg=(F('food_Rating')+F('service_Rating')+F('atmosphere_Rating')+F('price_Rating'))/4)
+
+    context_dict = {
+        'top_venues': means.order_by('-avg').values('rest_id', 'avg')
+    }
+    print(context_dict['top_venues'])
+    response = render(request, 'Rateaurant/Home.html', context=context_dict)
     return response
 
 
@@ -38,10 +47,8 @@ def show_venue(request, category_name, venue_id):
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
         context_dict['venue'] = venue
 
-        mean_ratings = {}
-        rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
         for rating_type in rating_types:
-            context_dict[rating_type] = Ratings.objects.aggregate(Avg(rating_type))[rating_type+'__avg']
+            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[rating_type+'__avg']
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None

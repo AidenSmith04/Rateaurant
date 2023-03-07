@@ -14,11 +14,11 @@
 
 <div id="Leftlist">
   <h2> Top 10 Restaurants </h2>
-  {% if restaurants %}
+  {% if top_venues %}
 		<ul>
-		{% for restaurant in restaurants %}
+		{% for venue in top_venues %}
 			<li>
-				<a href="{{ restaurant.url }}">{{ restaurant.name }}</a>
+				<a href="">{{ venue.rest_id }} {{ venue.avg }}</a>
 			</li>
 		{% endfor %}
 		</ul>
