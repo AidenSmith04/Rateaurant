@@ -148,7 +148,7 @@ def populate_ratings(restaurants, customer):
     return dict
 
 
-def add_restaurant(RestaurantID, name, category, address, city, postcode, takeaway_option=False):
+def add_restaurant(RestaurantID, name, category, address, city, postcode, takeaway_option="yes"):
     r = Restaurant.objects.get_or_create(restaurant_ID=RestaurantID)[0]
     r.name = name
     r.category = category
@@ -160,7 +160,7 @@ def add_restaurant(RestaurantID, name, category, address, city, postcode, takeaw
     return r
 
 
-def add_customer(customerID, username, password, email, id):
+def add_customer(customerID, username, password, email):
     
     user = User(username = username, email = email)
     user.set_password(password)
@@ -202,10 +202,10 @@ def populate():
     listowne = []
     listrest = []
     listcust = []
-    count = 0
+   
     for customers, customer_data in customer.items():
-        count+=1
-        cust = add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"], count)
+        
+        cust = add_customer(customers, customer_data["Username"], customer_data["Password"], customer_data["Email"])
         listcust.append(cust)
 
     for owners, owner_data in owner.items():

@@ -9,6 +9,7 @@ class Customer(models.Model):
 
     email = models.CharField(max_length=50)
 
+
     def __str__(self):
         return self.customer_ID
 
@@ -19,6 +20,7 @@ class Owner(models.Model):
     user = models.OneToOneField(User, primary_key=False, on_delete=models.CASCADE)
 
     email = models.CharField(max_length=50)
+    
 
     def __str__(self):
         return self.owner_ID
@@ -31,7 +33,7 @@ class Restaurant(models.Model):
     city = models.CharField(max_length=30, default="")
     postcode = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
-    takeaway_option = models.BooleanField(default=True)
+    takeaway_option = models.CharField(max_length= 3, default="yes")
 
     def __str__(self):
         return self.restaurant_ID
