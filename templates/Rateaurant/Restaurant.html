@@ -2,10 +2,6 @@
 {% extends 'Rateaurant/base.html' %}
 {% load staticfiles %}
 
-<head>
-	<link rel="stylesheet" href="Style.css"/>
-</head>
-
 {% block title_block %}
 	{% if venue %}
 		{{ restaurant.name }}
@@ -21,11 +17,11 @@
       Name: {{ venue.name }} <br>
       Address: {{ venue.address }} <br>
       Category: {{ venue.category }} <br>
-      Take-away or Dine-in: {{ venue.takeaway_option }} <br>
-      Food: {{ venue.food }} <br>
-      Service: {{ venue.service }} <br>
-      Atmosphere: {{ venue.atmosphere }} <br>
-      Price: {{ venue.price }} <br>
+      Take-away: {{ venue.takeaway_option }} <br>
+      Food: {{ food_Rating }} <br>
+      Service: {{ service_Rating }} <br>
+      Atmosphere: {{ atmosphere_Rating }} <br>
+      Price: {{ price_Rating }} <br>
   </p>
 </div>
 
@@ -40,7 +36,7 @@
 <div id="form">
 	<hr />
 	<h2> Rate this Restaurant </h2>
-	<form id="rating_form" method="post" action="{% url 'Rateaurant:Restaurant' %}">
+	<form id="rating_form" method="post" action="{% url 'Rateaurant:show_venue' %"}>
 			{% csrf_token %}
 			{% for hidden in form.hidden_fields %}
 				{{ hidden }}

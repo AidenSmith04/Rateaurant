@@ -4,7 +4,8 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from project.models import Restaurant, Owner
+from django.db.models import Avg
+from project.models import Restaurant, Owner, Ratings
 from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
 from Populate_Rateaurant import generateID
 
@@ -34,9 +35,13 @@ def show_category(request, category_name):
 def show_venue(request, category_name, venue_id):
     context_dict = {}
     try:
-
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
         context_dict['venue'] = venue
+
+        mean_ratings = {}
+        rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
+        for rating_type in rating_types:
+            context_dict[rating_type] = Ratings.objects.aggregate(Avg(rating_type))[rating_type+'__avg']
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
@@ -65,14 +70,12 @@ def register(request):
                 owner.email = email
                 owner.user = user
                 owner.save()
-                print('MWAHAHAHA')
             else:
                 customer = customer_form.save(commit=False)
                 customer.customer_ID = generateID()
                 customer.email = email
                 customer.user = user
                 customer.save()
-                print('uwu')
             registered = True
         if not registered:
             print(user_form.errors, customer_form.errors, owner_form.errors)
