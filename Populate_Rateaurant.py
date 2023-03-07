@@ -76,7 +76,7 @@ def populate_customer():
                      "keyGreen@mail", "CraneC@mail", "sunsetty@mail.com", "joey@mail.com", "Burpy@mail.com"]
     dict = {}
     for i in range(len(customerusername)):
-        dict[str(i)] = {"Username": customerusername[i], "Password": generatePassword(),
+        dict[str(i)] = {"Username": customerusername[i], "Password": "PASSW0RD",
                               "Email": customerEmail[i]}
     return dict
 
@@ -92,7 +92,7 @@ def populate_owner():
                   "owner2@mail.com"]
     dict = {}
     for i in range(len(ownerusername)):
-        dict[str(i*33)] = {"Username": ownerusername[i], "Password": generatePassword(), "Email": owneremail[i]}
+        dict[str(i*33)] = {"Username": ownerusername[i], "Password": "PASSW0RD", "Email": owneremail[i]}
     return dict
 
 
