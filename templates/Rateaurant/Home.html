@@ -14,11 +14,11 @@
 
 <div id="Leftlist">
   <h2> Top 10 Restaurants </h2>
-  {% if restaurants %}
+  {% if top_venues %}
 		<ul>
-		{% for restaurant in restaurants %}
+		{% for venue in top_venues %}
 			<li>
-				<a href="{{ restaurant.url }}">{{ restaurant.name }}</a>
+				<a href="{% url 'Rateaurant:show_venue' venue.category venue.rest_id %}">{{ venue.name }}</a>
 			</li>
 		{% endfor %}
 		</ul>
@@ -33,11 +33,12 @@
 
 <div id="aboutus">
 	<h2> About us </h2>
-	<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-		ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-		laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-		voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-		non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	<p>
+		Here at Rateaurant we want to make finding your next favourite restaurant as easy as possible.
+		So we wanted to create this website for our fellow foodies to rate restaurants they've eaten in
+		to help others discover their own little culinary oasis. Currently, we are trialing the site in Glasgow
+		to help get feedback about our app. We hope you find our app useful. While this site is free you can donate
+		to our kickstarter
 	</p>
 </div>
 

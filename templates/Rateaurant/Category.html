@@ -2,13 +2,9 @@
 {% extends 'Rateaurant/base.html' %}
 {% load staticfiles %}
 
-<head>
-	<link rel="stylesheet" href="Style.css"/>
-</head>
-
 {% block title_block %}
-	{% if category %}
-		{{ category.name }}
+	{% if venues %}
+		{{ venues.1.category }}
 	{% else %}
 		Unknown Category
 	{% endif %}
@@ -17,10 +13,10 @@
 {% block body_block %}
 <div id="Leftlist">
 	<h2> Restaurants </h2>
-	{% if category %}
+	{% if venues %}
 	<ul>
-		{% for restaurant in category %}
-		<li><a href="{{ restaurant.url }}">{{ restaurant.title }}</a></li>
+		{% for venue in venues %}
+		<li><a href="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">{{ venue.name }}</a></li>
 		{% endfor %}
 	</ul>
 	{% else %}

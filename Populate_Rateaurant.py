@@ -42,7 +42,7 @@ def populate_restaurant():
     indian = ["Mother India", "Chimes of India", "Chaiiwala", "Chaophraya"]
     greek = ["Gyros"]
     grill = ["Fat Hippo Glasgow", "BRGR", "American NY Grill", "The Butchershop Bar and Grill"]
-    contemprary = ["Ubiquitous chip", "The Ivy", "The Finnieston", "Ox and Finch", "Oran Mor", "Cranachan"]
+    contemporary = ["Ubiquitous chip", "The Ivy", "The Finnieston", "Ox and Finch", "Oran Mor", "Cranachan"]
 
     for i in range(len(ret)):
         temp_list = ret[i].keys()
@@ -64,7 +64,7 @@ def populate_restaurant():
             dict[key]["Category"] = "Greek"
         elif (dict[key]["Name"] in grill):
             dict[key]["Category"] = "Grill"
-        elif (dict[key]["Name"] in contemprary):
+        elif (dict[key]["Name"] in contemporary):
             dict[key]["Category"] = "Contemporary"
     return dict
 
