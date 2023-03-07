@@ -1,3 +1,17 @@
+h1 {
+    text-align: center;
+    font-size: 36px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 24px;
+}
+
+li {
+    list-style-type: none;
+}
+
 #Navbar ul {
     list-style-type: none;
     margin: 0;
@@ -27,6 +41,8 @@
     float: left;
     margin: 0;
     padding: 0;
+    text-align: center;
+    font-size: 18px;
     }
 
 #image {
@@ -37,16 +53,27 @@
 #aboutus {
     margin-left: 50%;
     width: 50%;
+    text-align: center;
     }
 
-#Rightlist ul {
+#Rightlist{
     margin-left: 50%;
     padding: 0;
+    text-align: center;
+    font-size: 18px;
     }
 
 #form {
     clear: both;
     text-align: center;
+}
+
+#restaurantlist {
+    width: 40%;
+    float: left;
+    margin: 0;
+    padding-left: 10%;
+    font-size: 18px;
 }
 
 #restaurantImage{
