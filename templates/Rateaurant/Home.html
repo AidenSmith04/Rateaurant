@@ -2,10 +2,6 @@
 {% extends 'Rateaurant/base.html' %}
 {% load staticfiles %}
 
-<head>
-	<link rel="stylesheet" href="Style.css"/>
-</head>
-
 {% block title_block %}
 	Homepage
 {% endblock %}
@@ -28,7 +24,7 @@
 </div>
 
 <div id="image">
-  <img src="/media/HomeRestaurant.jpg" alt="Picture of a Restaurant" />
+  <img src="{% static 'images/HomeRestaurant.jpg' %}" alt="Picture of a Restaurant" />
 </div>
 
 <div id="aboutus">
