@@ -42,6 +42,14 @@ class Ownership(models.Model):
 
     def __str__(self):
         return "%s %s " % (self.restaurant_ID, self.owner_ID)
+    
+class Favourited(models.Model):
+    cust_id = models.ForeignKey(Customer, on_delete=models.CASCADE, default =1)
+    rest_id = models.ForeignKey(Restaurant, on_delete=models.CASCADE, default=1)
+    
+    def __str__(self):
+        return "%s %s" % (self.cust_id, self.rest_id)
+
 
 
 class Ratings(models.Model):
@@ -60,7 +68,6 @@ class Ratings(models.Model):
     service_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
     atmosphere_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
     price_Rating = models.IntegerField(choices=RATING_CHOICES, default=NO_STAR)
-    favourited = models.BooleanField(default=False)
     comment = models.CharField(max_length=300)
 
     def __str__(self):

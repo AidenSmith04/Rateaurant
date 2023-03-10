@@ -10,7 +10,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rateaurant.settings')
 import django
 
 django.setup()
-from project.models import Customer, Owner, Restaurant, Ownership, Ratings
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings, Favourited
 from django.contrib.auth.models import User
 
 def generateID():
@@ -186,14 +186,19 @@ def add_ownership(restaurantID, ownerID):
     return own
 
 
-def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, favourited,
-                comment):
+def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, comment):
     rate = Ratings.objects.get_or_create(cust_id=customerID, rest_id=restaurantID, food_Rating=foodRating,
                                          service_Rating=serviceRating, atmosphere_Rating=atmosphereRating,
-                                         price_Rating=priceRating, favourited=favourited, comment=comment)[0]
+                                         price_Rating=priceRating, comment=comment)[0]
     rate.save()
     return rate
 
+def add_favourite(customerID, restaurantID):
+    fav = Favourited.objects.get_or_create(cust_id = customerID, rest_id = restaurantID)[0]
+    fav.save()
+    return fav
+
+##CREATE POPULATION FOR FAVOURITE TABLE
 
 def populate():
     owner = populate_owner()
@@ -224,8 +229,9 @@ def populate():
         add_ownership(key, val)
 
     for key, val in rating.items():
-        add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"],
-                    val["atmosphere_rating"], val["price_rating"], val["favourited"], val["comment"])
+        add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"], val["price_rating"], val["comment"])
+        if(val["favourited"]):
+            add_favourite(val["CustomerID"], val["RestaurantID"])
 
 
 if __name__ == '__main__':
