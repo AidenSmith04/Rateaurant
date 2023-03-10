@@ -31,6 +31,7 @@ class Restaurant(models.Model):
     postcode = models.CharField(max_length=50)
     category = models.CharField(max_length=30)
     takeaway_option = models.CharField(max_length= 3, default="yes")
+    picture = models.ImageField(upload_to='Restaurant_pics', blank=True)
 
     def __str__(self):
         return self.restaurant_ID
