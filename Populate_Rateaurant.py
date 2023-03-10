@@ -10,8 +10,13 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Rateaurant.settings')
 import django
 
 django.setup()
-from project.models import Customer, Owner, Restaurant, Ownership, Ratings
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings, Favourited
 from django.contrib.auth.models import User
+
+
+def getImagePath():
+    path = os.getcwd() + "/media/Restaurant_pics/"
+    return path
 
 def generateID():
     characters = string.ascii_letters + string.digits
@@ -26,6 +31,7 @@ def generatePassword():
 
 
 def populate_restaurant():
+    path = getImagePath()
     url = "https://ratings.food.gov.uk/OpenDataFiles/FHRS776en-GB.xml"
     response = requests.get(url)
     data = xmltodict.parse(response.content)
@@ -35,6 +41,11 @@ def populate_restaurant():
               "Ox and Finch", "Mozza", "Mother India", "Little Italy", "Joia Italian Restraunt and Bar", "Gyros",
               "Fat Hippo Glasgow", "Chimes of India", "BRGR", "Bella Italia", "American NY Grill", "Lamora Pizzeria",
               "Oran Mor", "Chaiiwala", "Chaophraya", "The Butchershop Bar and Grill", "Cranachan"]
+    
+    pic_dict = {"Zizzi":path +"/zizzi.jpg", "Wagamama":path+"/wagamama.jpg", "Ubiquitous chip":path+"/chip.jpg", "The Ivy":path+"/ivy.jpg", "The Finnieston":path+"/finnie.jpg", "Ramen Dayo":path+"/Ramen.jpg", "Paesano Pizza":path+"/paesano.jpg",
+              "Ox and Finch":path+"/ox.jpg", "Mozza":path+"/mozza.jpg", "Mother India":path+"/mother.jpg", "Little Italy":path+"/little_italy.jpg", "Joia Italian Restraunt and Bar":path+"/joia.jpg", "Gyros":path+"/gyro.jpg",
+              "Fat Hippo Glasgow":path+"/fat.jpg", "Chimes of India":path+"/chimes.jpg", "BRGR":path+"/brgr.jpg", "Bella Italia":path+"/bella.jpg", "American NY Grill":path+"/NY.jpg", "Lamora Pizzeria":path+"/lamora.jpg",
+              "Oran Mor":path+"/oran.jpg", "Chaiiwala":path+"/chaiiwala.jpg", "Chaophraya":path+"/Chaophreya", "The Butchershop Bar and Grill":path+"/butcher.jpg", "Cranachan":path+"/cran.jpg"}
 
     italian = ["Zizzi", "Paesano Pizza", "Mozza", "Little Italy", "Joia Italian Restraunt and Bar", "Bella Italia",
                "Lamora Pizzeria"]
@@ -50,7 +61,7 @@ def populate_restaurant():
             "BusinessType"] != "Takeaway/sandwich shop":
             dict[str(i*45)] = {"Name": ret[i]["BusinessName"], "Category": ret[i]["BusinessType"],
                                   "Address": ret[i]["AddressLine2"], "City": ret[i]["AddressLine3"],
-                                  "PostCode": ret[i]["PostCode"]}
+                                  "PostCode": ret[i]["PostCode"], "Image":pic_dict[ret[i]["BusinessName"]]}
             wanted.remove(ret[i]["BusinessName"])
 
     for key in dict.keys():
@@ -148,13 +159,14 @@ def populate_ratings(restaurants, customer):
     return dict
 
 
-def add_restaurant(RestaurantID, name, category, address, city, postcode, takeaway_option="yes"):
+def add_restaurant(RestaurantID, name, category, address, city, postcode, image, takeaway_option="yes"):
     r = Restaurant.objects.get_or_create(restaurant_ID=RestaurantID)[0]
     r.name = name
     r.category = category
     r.address = address
     r.city = city
     r.postcode = postcode
+    r.picture = image
     r.takeaway_option = takeaway_option
     r.save()
     return r
@@ -186,14 +198,19 @@ def add_ownership(restaurantID, ownerID):
     return own
 
 
-def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, favourited,
-                comment):
+def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, comment):
     rate = Ratings.objects.get_or_create(cust_id=customerID, rest_id=restaurantID, food_Rating=foodRating,
                                          service_Rating=serviceRating, atmosphere_Rating=atmosphereRating,
-                                         price_Rating=priceRating, favourited=favourited, comment=comment)[0]
+                                         price_Rating=priceRating, comment=comment)[0]
     rate.save()
     return rate
 
+def add_favourite(customerID, restaurantID):
+    fav = Favourited.objects.get_or_create(cust_id = customerID, rest_id = restaurantID)[0]
+    fav.save()
+    return fav
+
+##CREATE POPULATION FOR FAVOURITE TABLE
 
 def populate():
     owner = populate_owner()
@@ -214,7 +231,7 @@ def populate():
 
     for restaurants, restaurant_data in restaurant.items():
         rest = add_restaurant(restaurants, restaurant_data["Name"], restaurant_data["Category"],
-                              restaurant_data["Address"], restaurant_data["City"], restaurant_data["PostCode"])
+                              restaurant_data["Address"], restaurant_data["City"], restaurant_data["PostCode"], restaurant_data["Image"])
         listrest.append(rest)
 
     ownership = populate_ownership(listrest, listowne)
@@ -224,8 +241,9 @@ def populate():
         add_ownership(key, val)
 
     for key, val in rating.items():
-        add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"],
-                    val["atmosphere_rating"], val["price_rating"], val["favourited"], val["comment"])
+        add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"], val["price_rating"], val["comment"])
+        if(val["favourited"]):
+            add_favourite(val["CustomerID"], val["RestaurantID"])
 
 
 if __name__ == '__main__':
