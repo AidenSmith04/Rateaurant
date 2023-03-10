@@ -14,33 +14,23 @@ If you get a table doesnt exist error:
 4) python manage.py migrate
 
 Aiden:
-- Base.html
-- Home.html
-- Category.html
-- Categories.html
-- Restaurant.html
-- Login.html
-- Register.html
-- AddAPage.html
-- CSS Styling
+- Fixed Navbar
+- Fixed Spacing
+- Fix image width
+- Add Bootstrap
+- Fix register as owner title
 
 Joshua:
-- Models.py
-- Populate_Rateaurant.py
+- Fix database for favourites
 
 Sami:
-- Views.py
-- Forms.py
-- Admin.py
-- Apps.py
-- Urls.py
-- Settings.py
-- Manage.py
+- Chilling.py
 
 Luke:
-- Javascript
-- Form validation using validation
+- Add a rating
+- Add favourite
+- Create a logo
+- Add validation for rating
 
 Khalis:
-- Research Google maps API
 - Implement Google maps API
