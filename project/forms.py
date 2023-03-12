@@ -10,6 +10,11 @@ Categories = {
     ('Contemporary', 'Contemporary'),
 }
 
+YesNo = {
+    ('Yes', 'Yes'),
+    ('No', 'No')
+}
+
 
 class RestaurantForm(forms.ModelForm):
     name = forms.CharField(max_length=50, help_text="Please enter the name of the venue.")
@@ -18,7 +23,7 @@ class RestaurantForm(forms.ModelForm):
     postcode = forms.CharField(max_length=50, help_text="Please enter the postcode of the venue.")
     category = forms.CharField(widget=forms.Select(choices=Categories),
                                help_text="Please enter the category of the venue.")
-    takeaway_option = forms.BooleanField(initial=True)
+    takeaway_option = forms.CharField(widget=forms.Select(choices=YesNo), help_text="")
 
     class Meta:
         model = Restaurant

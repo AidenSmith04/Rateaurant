@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 
 
 def getImagePath():
-    path = os.getcwd() + "/media/Restaurant_pics/"
+    path = os.getcwd() + "/media/Restaurant_pics"
     return path
 
 def generateID():
