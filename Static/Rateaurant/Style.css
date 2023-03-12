@@ -12,6 +12,10 @@ li {
     list-style-type: none;
 }
 
+#Navbar {
+    width: 100%;
+}
+
 #Navbar ul {
     list-style-type: none;
     margin: 0;
@@ -20,19 +24,17 @@ li {
     background-color: #333;
     }
 
-#Navbar li {
-    float: left;
-    }
-
-#Navbar li a {
+#Navbar span a {
+    float:left;
     display: block;
     color: white;
     text-align: center;
-    padding: 16px 130px;
+    padding: 16px;
     text-decoration: none;
+    width:22%;
     }
 
-#Navbar li a:hover {
+#Navbar span a:hover {
     background-color: #111;
     }
 

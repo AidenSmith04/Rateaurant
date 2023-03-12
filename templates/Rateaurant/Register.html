@@ -15,7 +15,7 @@
 		Rango says: <strong>thank you for registering!</strong>
 	{% else %}
 		<div id="form">
-		  <h1>Register as an Owner</h1>
+		  <h1>Register for Rateaurant</h1>
 		  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ user_form.as_p }}
