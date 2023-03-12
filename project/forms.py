@@ -23,11 +23,12 @@ class RestaurantForm(forms.ModelForm):
     postcode = forms.CharField(max_length=50, help_text="Please enter the postcode of the venue.")
     category = forms.CharField(widget=forms.Select(choices=Categories),
                                help_text="Please enter the category of the venue.")
+    #picture = forms.ImageField(help_text="Image of restaurant.")
     takeaway_option = forms.CharField(widget=forms.Select(choices=YesNo), help_text="")
 
     class Meta:
         model = Restaurant
-        fields = ('name', 'address', 'city', 'postcode', 'category', 'takeaway_option')
+        fields = ('name', 'address', 'city', 'postcode', 'category', 'picture', 'takeaway_option')
 
 
 class UserForm(forms.ModelForm):

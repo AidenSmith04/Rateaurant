@@ -13,7 +13,7 @@
 {% block body_block %}
 	<div id="form">
 		<h1>Add a Restaurant</h1>
-		<form id="restaurant_form" method="post" action="{% url 'Rateaurant:addarestaurant' %}">
+		<form id="restaurant_form" method="post" action="{% url 'Rateaurant:addarestaurant' %}" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ restaurant_form.as_p }}
 			<input type="submit" name="submit" value="Create Restaurant" />

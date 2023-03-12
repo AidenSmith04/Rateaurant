@@ -130,12 +130,17 @@ def add_a_restaurant(request):
     if request.method == 'POST':
         restaurant_form = RestaurantForm(request.POST)
         ownership_form = OwnershipForm(request.POST)
-        print('hi')
+
         if restaurant_form.is_valid() and ownership_form.is_valid():
             restaurant_id = generateID()
 
             restaurant = restaurant_form.save(commit=False)
             restaurant.restaurant_ID = restaurant_id
+            print(request.FILES)
+            if 'picture' in request.FILES:
+                print('mogus')
+                restaurant.picture = request.FILES['picture']
+
             restaurant.save()
 
             ownership = ownership_form.save(commit=False)
