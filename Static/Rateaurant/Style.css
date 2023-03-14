@@ -1,3 +1,8 @@
+body{
+    background-color: #333;
+    color: white;
+}
+
 h1 {
     text-align: center;
     font-size: 36px;
@@ -6,10 +11,19 @@ h1 {
 h2 {
     text-align: center;
     font-size: 24px;
+    color: white;
+}
+
+h3 {
+    font-size: 24px;
 }
 
 li {
     list-style-type: none;
+}
+
+#Navbar {
+    width: 100%;
 }
 
 #Navbar ul {
@@ -20,23 +34,22 @@ li {
     background-color: #333;
     }
 
-#Navbar li {
-    float: left;
-    }
-
-#Navbar li a {
+#Navbar span a {
+    float:left;
     display: block;
     color: white;
     text-align: center;
-    padding: 16px 130px;
+    padding: 16px;
     text-decoration: none;
+    width:22%;
     }
 
-#Navbar li a:hover {
+#Navbar span a:hover {
     background-color: #111;
     }
 
 #Leftlist{
+    background-color: #333;
     width: 50%;
     float: left;
     margin: 0;
@@ -44,6 +57,18 @@ li {
     text-align: center;
     font-size: 18px;
     }
+
+#Leftlist a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+#Leftlist a:hover{
+    background-color: #111;
+}
 
 #image {
     margin-left: 50%;
@@ -58,10 +83,23 @@ li {
 
 #Rightlist{
     margin-left: 50%;
+    background-color: #333;
     padding: 0;
     text-align: center;
     font-size: 18px;
     }
+
+#Rightlist a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+#Rightlist a:hover{
+    background-color: #111;
+}
 
 #form {
     clear: both;

@@ -14,11 +14,7 @@ If you get a table doesnt exist error:
 4) python manage.py migrate
 
 Aiden:
-- Fixed Navbar
-- Fixed Spacing
-- Fix image width
 - Add Bootstrap
-- Fix register as owner title
 
 Joshua:
 - Fix database for favourites

@@ -19,17 +19,17 @@
 		<hr />
         <div id="Navbar">
 			<ul>
-				<li><a href="{% url 'Rateaurant:home' %}">Home</a></li>
-				<li><a href="{% url 'Rateaurant:categories' %}">All Categories</a></li>
+				<span><a href="{% url 'Rateaurant:home' %}">Home</a></span>
+				<span><a href="{% url 'Rateaurant:categories' %}">All Categories</a></span>
 				{% if user.is_authenticated %}
 				{%if user.owner %}
-					<li><a href="{% url 'Rateaurant:addarestaurant' %}">Add a Restaurant</a></li>
+					<span><a href="{% url 'Rateaurant:addarestaurant' %}">Add a Restaurant</a></span>
 				{% endif %}
-				<li><a href="{% url 'Rateaurant:logout' %}">Logout</a></li>
-				<li><a href="">Welcome, {{ user }}</a></li></li>
+				<span><a href="{% url 'Rateaurant:logout' %}">Logout</a></span>
+				<span><a href="">Welcome, {{ user }}</a></span></li>
 				{% else %}
-					<li><a href="{% url 'Rateaurant:register' %}">Register</a></li>
-					<li><a href="{% url 'Rateaurant:login' %}">Login</a></li>
+					<span><a href="{% url 'Rateaurant:register' %}">Register</a></span>
+					<span><a href="{% url 'Rateaurant:login' %}">Login</a></span>
 				{% endif %}
 			</ul>
 		</div>
