@@ -20,7 +20,7 @@
 			{% csrf_token %}
 			{{ user_form.as_p }}
 
-			E-mail: <input type="email" name="email" value='' /></br> </br>
+			E-mail: <input type="email" name="email" value='' required/></br> </br>
 			Register as Restaurant Owner: <input type="checkbox" name="as_owner" value="Register as Restaurant Owner" /></br>
 			<input type="submit" name="submit" value="Register" />
 		  </form>
