@@ -31,13 +31,19 @@ li {
 
 #Logo_image {
     max-width:100%;
-    transition: filter 0.8s;
+    transition: filter 0.4s;
+    -webkit-transition: filter 0.4s;
+    -moz-transition: filter 0.4s;
+    -o-transition: filter 0.4s;
 }
 
 #Logo_image:hover {
     filter: drop-shadow(0 0 2px #fd0)
             drop-shadow(0 0 2px #fd0);
     transition: filter 0.4s;
+    -webkit-transition: filter 0.4s;
+    -moz-transition: filter 0.4s;
+    -o-transition: filter 0.4s;
 }
 
 
