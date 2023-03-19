@@ -165,6 +165,7 @@ li {
 }
 
 #favourite > label:hover {
+    cursor: pointer;
     -webkit-text-fill-color: #5a363d;
 }
 
