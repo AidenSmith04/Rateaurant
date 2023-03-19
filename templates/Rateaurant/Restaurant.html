@@ -13,6 +13,9 @@
 {% block body_block %}
 
 <div id="restaurantlist">
+	<div id="favourite">
+		<input type="checkbox" name="favourite" id="favourite_checkbox"/>
+		<label for="favourite_checkbox" title="Add to Favourites">❤</label>	</div>
   <p>
       <h3> {{ venue.name }} </h3>
       Address: {{ venue.address }} <br>
@@ -81,10 +84,6 @@
 		</div>
 
 	</form>
-</div>
-
-<div>
-	Placeholder for favourite button.
 </div>
 
 {% endblock %}

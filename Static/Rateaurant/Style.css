@@ -124,6 +124,29 @@ li {
     width: 24%;
 }
 
+#favourite {
+    float: right;
+}
+
+#favourite > input {
+    display:none;
+}
+
+#favourite > label {
+    font-size: 30px;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px;
+    -webkit-text-stroke-color: #f54263;
+}
+
+#favourite > label:hover {
+    -webkit-text-fill-color: #5a363d;
+}
+
+#favourite > input:checked + label {
+    -webkit-text-fill-color: #f54263;
+}
+
 #rating_form {
     width: 100%;
     height: 500px;
