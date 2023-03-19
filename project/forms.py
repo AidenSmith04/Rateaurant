@@ -1,5 +1,5 @@
 from django import forms
-from project.models import Customer, Owner, Restaurant, Ownership
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings
 from django.contrib.auth.models import User
 
 Categories = {
@@ -59,7 +59,13 @@ class OwnerForm(forms.ModelForm):
 
 
 class OwnershipForm(forms.ModelForm):
-
     class Meta:
         model = Ownership
         exclude = ('owner_ID', 'restaurant_ID')
+
+
+class ReviewForm(forms.ModelForm):
+    comment = forms.CharField(max_length=300)
+
+    class Meta:
+        model = Ratings

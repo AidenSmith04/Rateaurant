@@ -52,7 +52,6 @@ class Favourited(models.Model):
         return "%s %s" % (self.cust_id, self.rest_id)
 
 
-
 class Ratings(models.Model):
     NO_STAR = 0
     ONE_STAR = 1
