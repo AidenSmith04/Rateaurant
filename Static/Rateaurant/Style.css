@@ -22,6 +22,25 @@ li {
     list-style-type: none;
 }
 
+#Logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+}
+
+#Logo_image {
+    max-width:100%;
+    transition: filter 0.8s;
+}
+
+#Logo_image:hover {
+    filter: drop-shadow(0 0 2px #fd0)
+            drop-shadow(0 0 2px #fd0);
+    transition: filter 0.4s;
+}
+
+
 #Navbar {
     width: 100%;
 }
