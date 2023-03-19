@@ -95,4 +95,17 @@
 	</form>
 </div>
 
+<div id="Comments">
+	<h2> Comments </h2>
+	{% if comments %}
+	<ul>
+		{% for comment in comments %}
+			<li> comment </li>
+		{% endfor %}
+	</ul>
+	{% else %}
+		<strong>No comments currently for this Restaurant</strong>
+	{% endif %}
+</div>
+
 {% endblock %}
