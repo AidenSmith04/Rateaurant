@@ -27,10 +27,18 @@
 
 <div id="restaurantImage">
   <img src="{{ venue.picture.url }}" alt="Picture of the Restaurant" width="100%" height="200px"/>
+    <iframe
+      width="400"
+      height="200px"
+      frameborder="0" style="border:0"
+      referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps/embed/v1/place?q={{ venue.name }},{{ venue.address }}
+           &key=AIzaSyAYoWF2Z4pftsCNZKsBhGkLVWyt9Nb9YVY">
+    </iframe>
 </div>
 
 <div id="googleMaps">
-    Google Maps Goes here
+
 </div>
 
 <div id="form">
