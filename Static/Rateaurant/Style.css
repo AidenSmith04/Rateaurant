@@ -144,9 +144,9 @@ li {
     width: 25%;
 }
 
-#googleMaps{
-    margin-left: 76%;
-    width: 24%;
+#comments {
+    font-size: 18px;
+    text-align: center;
 }
 
 #favourite {
