@@ -11,6 +11,12 @@ from Populate_Rateaurant import generateID
 
 rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
 
+def is_customer(user):
+    try:
+        if user.customer:
+            return True
+    except:
+        return False
 
 def home(request):
     means = Ratings.objects.annotate(
@@ -31,7 +37,19 @@ def home(request):
 
 
 def categories(request):
-    response = render(request, 'Rateaurant/Categories.html', context={'categories': Categories})
+    context_dict = {'categories': Categories, 'favourites': []}
+
+    if request.user.is_authenticated and is_customer(request.user):
+        faves = Favourited.objects.filter(cust_id=Customer.objects.get(user=request.user))
+
+        for fave in faves:
+            context_dict['favourites'].append({
+                'name': fave.rest_id.name,
+                'rest_id': fave.rest_id.restaurant_ID,
+                'category': fave.rest_id.category
+            })
+            print(context_dict['favourites'][-1])
+    response = render(request, 'Rateaurant/Categories.html', context=context_dict)
     return response
 
 
