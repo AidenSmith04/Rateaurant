@@ -13,6 +13,10 @@
 {% block body_block %}
 
 <div id="restaurantlist">
+	<div id="favourite">
+		<input type="checkbox" name="favourite" id="favourite_checkbox"/>
+		<label for="favourite_checkbox" title="Add to Favourites">❤</label>
+	</div>
   <p>
       <h3> {{ venue.name }} </h3>
       Address: {{ venue.address }} <br>
@@ -27,31 +31,81 @@
 
 <div id="restaurantImage">
   <img src="{{ venue.picture.url }}" alt="Picture of the Restaurant" width="100%" height="200px"/>
+    <iframe
+      width="400"
+      height="200px"
+      frameborder="0" style="border:0"
+      referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps/embed/v1/place?q={{ venue.name }},{{ venue.address }}
+           &key=AIzaSyAYoWF2Z4pftsCNZKsBhGkLVWyt9Nb9YVY">
+    </iframe>
 </div>
 
 <div id="googleMaps">
-    Google Maps Goes here
+
 </div>
 
 <div id="form">
 	<hr />
 	<h2> Rate this Restaurant </h2>
 	<form id="rating_form" method="post" action="{% url 'Rateaurant:show_venue' %"}>
-			{% csrf_token %}
-			{% for hidden in form.hidden_fields %}
-				{{ hidden }}
-			{% endfor %}
-			{% for field in form.visible_fields %}
-				{{ field.errors }}
-				{{ field.help_text }}
-				{{ field }}
-			{% endfor %}
-			<input type="submit" name="submit" value="Add a Rating" />
-		</form>
+		{% csrf_token %}
+		<div id="stars_section">
+			<fieldset class="rating">
+				<input type="radio" id="star5food" name="ratingfood" value="5" required/><label for="star5food" title="5 stars">★</label>
+				<input type="radio" id="star4food" name="ratingfood" value="4" required/><label for="star4food" title="4 stars">★</label>
+				<input type="radio" id="star3food" name="ratingfood" value="3" required/><label for="star3food" title="3 stars">★</label>
+				<input type="radio" id="star2food" name="ratingfood" value="2" required/><label for="star2food" title="2 stars">★</label>
+				<input type="radio" id="star1food" name="ratingfood" value="1" required/><label for="star1food" title="1 star">★</label>
+				<h2>Food Rating:</h2>
+			</fieldset>
+			<fieldset class="rating">
+				<input type="radio" id="star5service" name="ratingservice" value="5" required/><label for="star5service" title="5 stars">★</label>
+				<input type="radio" id="star4service" name="ratingservice" value="4" required/><label for="star4service" title="4 stars">★</label>
+				<input type="radio" id="star3service" name="ratingservice" value="3" required/><label for="star3service" title="3 stars">★</label>
+				<input type="radio" id="star2service" name="ratingservice" value="2" required/><label for="star2service" title="2 stars">★</label>
+				<input type="radio" id="star1service" name="ratingservice" value="1" required/><label for="star1service" title="1 star">★</label>
+				<h2>Service Rating:</h2>
+			</fieldset>
+			<fieldset class="rating">
+				<input type="radio" id="star5atmosphere" name="ratingatmosphere" value="5" required/><label for="star5atmosphere" title="5 stars">★</label>
+				<input type="radio" id="star4atmosphere" name="ratingatmosphere" value="4" required/><label for="star4atmosphere" title="4 stars">★</label>
+				<input type="radio" id="star3atmosphere" name="ratingatmosphere" value="3" required/><label for="star3atmosphere" title="3 stars">★</label>
+				<input type="radio" id="star2atmosphere" name="ratingatmosphere" value="2" required/><label for="star2atmosphere" title="2 stars">★</label>
+				<input type="radio" id="star1atmosphere" name="ratingatmosphere" value="1" required/><label for="star1atmosphere" title="1 star">★</label>
+				<h2>Atmosphere Rating:</h2>
+			</fieldset>
+			<fieldset class="rating">
+				<input type="radio" id="star5price" name="ratingprice" value="5" required/><label for="star5price" title="5 stars">★</label>
+				<input type="radio" id="star4price" name="ratingprice" value="4" required/><label for="star4price" title="4 stars">★</label>
+				<input type="radio" id="star3price" name="ratingprice" value="3" required/><label for="star3price" title="3 stars">★</label>
+				<input type="radio" id="star2price" name="ratingprice" value="2" required/><label for="star2price" title="2 stars">★</label>
+				<input type="radio" id="star1price" name="ratingprice" value="1" required/><label for="star1price" title="1 star">★</label>
+				<h2>Price Rating:</h2>
+			</fieldset>
+		</div>
+		<div id="comment_section">
+			<textarea name="comment" id="comment_box" placeholder="Leave a comment"></textarea>
+		</div>
+		<div></div>
+		<div id="submit_section">
+			<input type="submit" name="submitrating" value="Submit" onclick="confirm('Are you sure you want to submit your star ratings and comment?')"/>
+		</div>
+
+	</form>
 </div>
 
-<div>
-	Placeholder for favourite button.
+<div id="Comments">
+	<h2> Comments </h2>
+	{% if comments %}
+	<ul>
+		{% for comment in comments %}
+			<li> comment </li>
+		{% endfor %}
+	</ul>
+	{% else %}
+		<strong>No comments currently for this Restaurant</strong>
+	{% endif %}
 </div>
 
 {% endblock %}
