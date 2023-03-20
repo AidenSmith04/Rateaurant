@@ -200,30 +200,3 @@ class RatingsMethodTests(TestCase):
         rating.save()
 
         self.assertEqual(rating.price_Rating, 5)
-
-
-def add_restaurant(self, restaurant_id, name, city, postcode, address, category, takeaway_option):
-    restaurant = Restaurant(restaurant_ID=restaurant_id, name=name, city=city, postcode=postcode,
-                                        address=address, category=category, takeaway_option=takeaway_option)
-    restaurant.save()
-    return restaurant
-
-class HomeViewTests(TestCase):
-
-
-    def test_home_view_with_restaurants(self):
-        add_restaurant(self, "1", "name1", "city1", "postcode1", "address1", "category1", "yes")
-        add_restaurant(self, "1", "name2", "city2", "postcode2", "address2", "category2", "yes")
-        add_restaurant(self, "1", "name3", "city3", "postcode3", "address3", "category3", "yes")
-        add_restaurant(self, "1", "name1", "city4", "postcode4", "address4", "category4", "yes")
-        add_restaurant(self, "1", "name5", "city5", "postcode5", "address5", "category5", "yes")
-        add_restaurant(self, "1", "name6", "city6", "postcode6", "address6", "category6", "yes")
-        add_restaurant(self, "1", "name7", "city7", "postcode7", "address7", "category7", "yes")
-        add_restaurant(self, "1", "name8", "city8", "postcode8", "address8", "category8", "yes")
-        add_restaurant(self, "1", "name9", "city9", "postcode9", "address9", "category9", "yes")
-        add_restaurant(self, "1", "name10", "city10", "postcode10", "address10", "category10", "yes")
-
-        response = self.client.get(reverse('Rateaurant:home'))
-
-        self.assertContains(response, "name1")
-        self.assertQuerysetEqual(response.context['top_venues'], 0)

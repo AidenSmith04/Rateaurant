@@ -149,6 +149,12 @@ li {
     text-align: center;
 }
 
+#comment {
+    margin: 15px;
+    padding: 5px;
+    border: 1px solid white;
+}
+
 #favourite {
     float: right;
 }

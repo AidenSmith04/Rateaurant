@@ -96,13 +96,15 @@
 	{% endif %}
 </div>
 
-<div id="Comments">
+<div id="comments">
 	<h2> Comments </h2>
 	{% if reviews %}
 	<ul>
 		{% for review in reviews %}
 			<li> {{ review.name }} </li>
-			<li> {{ review.comment }} </li>
+			<div id="comment">
+				<li> {{ review.comment }} </li>
+			</div>
 			<br>
 		{% endfor %}
 	</ul>
