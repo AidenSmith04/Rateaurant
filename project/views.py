@@ -15,17 +15,19 @@ rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rat
 def home(request):
     means = Ratings.objects.annotate(
         avg=(F('food_Rating') + F('service_Rating') + F('atmosphere_Rating') + F('price_Rating')) / 4)
-
+    #
     context_dict = {}
     top_venues = [x for x in means.order_by('-avg').values('rest_id', 'avg')]
-
+    #print(rop)
     for i in range(0, 10):
         query = Restaurant.objects.get(restaurant_ID=top_venues[i]['rest_id'])
+        print('Q:', query, query.name, query.category)
         top_venues[i]['name'] = query.name
         top_venues[i]['category'] = query.category
 
     context_dict = {'top_venues': top_venues}
-    print(context_dict)
+    for a in top_venues:
+        print(a, '\n')
     response = render(request, 'Rateaurant/Home.html', context=context_dict)
     return response
 
@@ -48,7 +50,6 @@ def show_category(request, category_name):
 
 
 def show_venue(request, category_name, venue_id):
-    print(category_name, venue_id)
     context_dict = {}
     try:
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
@@ -58,43 +59,37 @@ def show_venue(request, category_name, venue_id):
             context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[
                 rating_type + '__avg']
 
-        user = None
-        try:
-            if request.user.is_authenticated:
-                user = Customer.objects.get(user=request.user)
-        except Customer.DoesNotExist:
-            pass
+        if request.method == 'POST' and request.user.is_authenticated:
 
-        reviewed = False
-
-        if user:
+            user = None
+            reviewed = False
             try:
-                print(Ratings.objects.get(rest_id=venue_id, cust_id=user))
+                Ratings.objects.get(rest_id=venue_id, cust_id=request.user.id)
                 reviewed = True
+                print('FOUND YER REVIEW')
             except Ratings.DoesNotExist:
-                print('nein')
+                pass
 
-        if request.method == 'POST':
             print(request.POST)
             review_form = ReviewForm(request.POST)
 
-            if review_form.is_valid():
+            if review_form.is_valid() and not reviewed:
                 print('BABONGUS')
                 review = review_form.save(commit=False)
-                review.food_Rating = request.POST['ratingfood']
-                review.service_Rating = request.POST['ratingservice']
-                review.atmosphere_Rating = request.POST['ratingatmosphere']
-                review.price_Rating = request.POST['ratingprice']
-                review.comment = request.POST['comment']
-                review.cust_id = user
-                review.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
+                review.cust_id = Customer.objects.get(user=request.user)
+                res = Restaurant.objects.get(restaurant_ID=venue_id)
+                print(res, venue_id, res.name)
+                review.rest_id = res
+                review.food_Rating = int(request.POST['ratingfood'])
+                review.service_Rating = int(request.POST['ratingservice'])
+                review.atmosphere_Rating = int(request.POST['ratingatmosphere'])
+                review.price_Rating = int(request.POST['ratingprice'])
+                print(review)
                 review.save()
-            else:
-                print(review_form.errors)
-        else:
-            review_form = ReviewForm()
 
-        context_dict['review_form'] = review_form
+            else:
+                print('mailed fiserably')
+                print(review_form.errors)
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
@@ -134,6 +129,8 @@ def register(request):
             print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
         user_form = UserForm()
+        customer_form = CustomerForm()
+        owner_form = OwnerForm()
 
     context = {
         'user_form': user_form,
