@@ -160,7 +160,7 @@ def populate_ratings(restaurants, customer):
 
 
 def add_restaurant(RestaurantID, name, category, address, city, postcode, image, takeaway_option="yes"):
-    r = Restaurant.objects.get_or_create(restaurant_ID=RestaurantID)[0]
+    r = Restaurant.objects.create(restaurant_ID=RestaurantID)
     r.name = name
     r.category = category
     r.address = address
@@ -177,7 +177,7 @@ def add_customer(customerID, username, password, email):
     user = User(username = username, email = email)
     user.set_password(password)
     user.save()
-    c = Customer.objects.get_or_create(customer_ID = customerID, user = user)[0]
+    c = Customer.objects.create(customer_ID = customerID, user = user)
  
     c.save()
     return c
@@ -187,26 +187,27 @@ def add_owner(ownerID, username, password, email):
     owner = User(username = username, email = email)
     owner.set_password(password)
     owner.save()
-    o = Owner.objects.get_or_create(owner_ID = ownerID, user = owner)[0]
+    o = Owner.objects.create(owner_ID = ownerID, user = owner)
     o.save()
     return o
 
 
 def add_ownership(restaurantID, ownerID):
-    own = Ownership.objects.get_or_create(restaurant_ID=restaurantID, owner_ID=ownerID)[0]
+    own = Ownership.objects.create(restaurant_ID=restaurantID, owner_ID=ownerID)
     own.save()
     return own
 
 
 def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereRating, priceRating, comment):
-    rate = Ratings.objects.get_or_create(cust_id=customerID, rest_id=restaurantID, food_Rating=foodRating,
+    rate = Ratings.objects.create(cust_id=customerID, rest_id=restaurantID, food_Rating=foodRating,
                                          service_Rating=serviceRating, atmosphere_Rating=atmosphereRating,
-                                         price_Rating=priceRating, comment=comment)[0]
+                                         price_Rating=priceRating, comment=comment)
     rate.save()
+    print(rate.rest_id)
     return rate
 
 def add_favourite(customerID, restaurantID):
-    fav = Favourited.objects.get_or_create(cust_id = customerID, rest_id = restaurantID)[0]
+    fav = Favourited.objects.create(cust_id = customerID, rest_id = restaurantID)
     fav.save()
     return fav
 
@@ -239,11 +240,14 @@ def populate():
 
     for key, val in ownership.items():
         add_ownership(key, val)
-
+    count =0
     for key, val in rating.items():
+        count+=1
         add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"], val["price_rating"], val["comment"])
         if(val["favourited"]):
             add_favourite(val["CustomerID"], val["RestaurantID"])
+ 
+    print(count)
 
 
 if __name__ == '__main__':
