@@ -22,6 +22,31 @@ li {
     list-style-type: none;
 }
 
+#Logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+}
+
+#Logo_image {
+    max-width:100%;
+    transition: filter 0.4s;
+    -webkit-transition: filter 0.4s;
+    -moz-transition: filter 0.4s;
+    -o-transition: filter 0.4s;
+}
+
+#Logo_image:hover {
+    filter: drop-shadow(0 0 2px #fd0)
+            drop-shadow(0 0 2px #fd0);
+    transition: filter 0.4s;
+    -webkit-transition: filter 0.4s;
+    -moz-transition: filter 0.4s;
+    -o-transition: filter 0.4s;
+}
+
+
 #Navbar {
     width: 100%;
 }
@@ -119,9 +144,9 @@ li {
     width: 25%;
 }
 
-#googleMaps{
-    margin-left: 76%;
-    width: 24%;
+#comments {
+    font-size: 18px;
+    text-align: center;
 }
 
 #favourite {
@@ -140,6 +165,7 @@ li {
 }
 
 #favourite > label:hover {
+    cursor: pointer;
     -webkit-text-fill-color: #5a363d;
 }
 

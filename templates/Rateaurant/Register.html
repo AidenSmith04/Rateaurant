@@ -12,11 +12,11 @@
 	{% else %}
 		<div id="form">
 		  <h1>Register for Rateaurant</h1>
-		  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data">
+		  <form id="Owner_form" method="post" action="{% url 'Rateaurant:register' %}" enctype="multipart/form-data" onsubmit="alert('Thank you for registering for Rateaurant. We hope you enjoy our website.')">
 			{% csrf_token %}
 			{{ user_form.as_p }}
 
-			E-mail: <input type="email" name="email" value='' /></br> </br>
+			E-mail: <input type="email" name="email" value='' required/></br> </br>
 			Register as Restaurant Owner: <input type="checkbox" name="as_owner" value="Register as Restaurant Owner" /></br>
 			<input type="submit" name="submit" value="Register" />
 		  </form>
