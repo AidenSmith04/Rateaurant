@@ -5,8 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Avg, F
-from project.models import Restaurant, Owner, Ratings
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
+from project.models import Restaurant, Customer, Owner, Ratings
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm, ReviewForm
 from Populate_Rateaurant import generateID
 
 rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
@@ -25,7 +25,7 @@ def home(request):
         top_venues[i]['category'] = query.category
 
     context_dict = {'top_venues': top_venues}
-
+    print(context_dict)
     response = render(request, 'Rateaurant/Home.html', context=context_dict)
     return response
 
@@ -48,6 +48,7 @@ def show_category(request, category_name):
 
 
 def show_venue(request, category_name, venue_id):
+    print(category_name, venue_id)
     context_dict = {}
     try:
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
@@ -56,6 +57,44 @@ def show_venue(request, category_name, venue_id):
         for rating_type in rating_types:
             context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[
                 rating_type + '__avg']
+
+        user = None
+        try:
+            if request.user.is_authenticated:
+                user = Customer.objects.get(user=request.user)
+        except Customer.DoesNotExist:
+            pass
+
+        reviewed = False
+
+        if user:
+            try:
+                print(Ratings.objects.get(rest_id=venue_id, cust_id=user))
+                reviewed = True
+            except Ratings.DoesNotExist:
+                print('nein')
+
+        if request.method == 'POST':
+            print(request.POST)
+            review_form = ReviewForm(request.POST)
+
+            if review_form.is_valid():
+                print('BABONGUS')
+                review = review_form.save(commit=False)
+                review.food_Rating = request.POST['ratingfood']
+                review.service_Rating = request.POST['ratingservice']
+                review.atmosphere_Rating = request.POST['ratingatmosphere']
+                review.price_Rating = request.POST['ratingprice']
+                review.comment = request.POST['comment']
+                review.cust_id = user
+                review.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
+                review.save()
+            else:
+                print(review_form.errors)
+        else:
+            review_form = ReviewForm()
+
+        context_dict['review_form'] = review_form
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
@@ -95,8 +134,6 @@ def register(request):
             print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
         user_form = UserForm()
-        customer_form = CustomerForm()
-        owner_form = OwnerForm()
 
     context = {
         'user_form': user_form,
