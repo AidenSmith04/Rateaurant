@@ -237,7 +237,7 @@ li {
 .rating > label {
     font-size: 50px;
     float: right;
-    color: #aaa; /*grey*/
+    color: #aaa;
     text-decoration: none;
     -webkit-transition: color .8s;
     -moz-transition: color .8s;
@@ -246,8 +246,8 @@ li {
     float:none
 }
 
-.rating > input:checked ~ label, /* makes selected and any before selected yellow */
-.rating > label:hover ~ label, /* makes hovered and any before hovered yellow */
+.rating > input:checked ~ label,
+.rating > label:hover ~ label,
 .rating > input:checked + label,
 .rating > input:hover + label {
     cursor: pointer;

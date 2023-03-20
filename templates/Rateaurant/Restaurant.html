@@ -12,16 +12,21 @@
 
 {% block body_block %}
 
+{% if faved %}
+	<script>
+		window.onload = function() {alreadyFavourite()};
+		function alreadyFavourite() {
+			document.getElementById("favourite_checkbox").checked = true;
+	}
+	</script>
+{% endif %}
+
 <div id="restaurantlist">
-	<div id="favourite">
-		<form method="post" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
+	<div>
+		<form id = "favourite" method="post" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
 			{% csrf_token %}
-			<input onchange="this.form.submit()" type="checkbox" name="favourite" id="favourite_checkbox"/>
-			{% if faved %}
-				aye
-			{% endif %}
+			<input onchange="this.form.submit()" type="checkbox" name="favourite" id="favourite_checkbox"/><label for="favourite_checkbox" title="Add to Favourites">❤</label>
 		</form>
-		<label for="favourite_checkbox" title="Add to Favourites">❤</label>
 	</div>
   <p>
       <h3> {{ venue.name }} </h3>
@@ -111,7 +116,6 @@
 			<div id="comment">
 				<li> {{ review.comment }} </li>
 			</div>
-			<br>
 		{% endfor %}
 	</ul>
 	{% else %}
