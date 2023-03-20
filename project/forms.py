@@ -1,5 +1,5 @@
 from django import forms
-from project.models import Customer, Owner, Restaurant, Ownership, Ratings
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings, Favourited
 from django.contrib.auth.models import User
 
 Categories = {
@@ -66,7 +66,15 @@ class OwnershipForm(forms.ModelForm):
 
 class ReviewForm(forms.ModelForm):
     comment = forms.CharField(max_length=300, required=False)
-
+    forms
     class Meta:
         model = Ratings
         fields = ('comment',)
+
+
+class FavouriteForm(forms.ModelForm):
+    field = forms.BooleanField(widget=forms.Select(attrs={'onchange': 'submit();'}))
+
+    class Meta:
+        model = Favourited
+        fields = ('field',)

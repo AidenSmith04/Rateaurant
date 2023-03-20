@@ -14,7 +14,13 @@
 
 <div id="restaurantlist">
 	<div id="favourite">
-		<input type="checkbox" name="favourite" id="favourite_checkbox"/>
+		<form method="post" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
+			{% csrf_token %}
+			<input onchange="this.form.submit()" type="checkbox" name="favourite" id="favourite_checkbox"/>
+			{% if faved %}
+				aye
+			{% endif %}
+		</form>
 		<label for="favourite_checkbox" title="Add to Favourites">❤</label>
 	</div>
   <p>
@@ -90,7 +96,7 @@
 			</div>
 			<div></div>
 			<div id="submit_section">
-				<input type="submit" name="submitrating" value="Submit" onclick="confirm('Are you sure you want to submit your star ratings and comment?')"/>
+				<input type="submit" name="submitform" value="Submit" onclick="confirm('Are you sure you want to submit your star ratings and comment?')"/>
 			</div>
 	</form>
 	{% endif %}
