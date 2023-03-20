@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-
 from project.models import Customer, User, Owner, Restaurant, Ratings
 
 class CustomerMethodTests(TestCase):
@@ -200,3 +199,19 @@ class RatingsMethodTests(TestCase):
         rating.save()
 
         self.assertEqual(rating.price_Rating, 5)
+
+class CategoriesViewTests(TestCase):
+    def test_categories_view_with_categories(self):
+        response = self.client.get(reverse('Rateaurant:categories'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Greek")
+        self.assertContains(response, "Indian")
+        self.assertContains(response, "Asian")
+
+        num_categories = len(response.context['categories'])
+        self.assertEquals(num_categories, 5)
+
+class ShowCategoryViewTests(TestCase):
+    def test_category_view_with_restaurants(self):
+        response = self.client.get(reverse('Rateaurant:'))
