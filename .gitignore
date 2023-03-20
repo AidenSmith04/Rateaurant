@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/project/migrations/0001_initial.py
+/project/migrations/__init__.py
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/Rateaurant.iml
+/.idea/vcs.xml
