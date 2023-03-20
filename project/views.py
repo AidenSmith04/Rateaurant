@@ -5,8 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Avg, F
-from project.models import Restaurant, Owner, Ratings
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
+from project.models import Restaurant, Customer, Owner, Ratings, User
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm, ReviewForm
 from Populate_Rateaurant import generateID
 
 rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
@@ -16,13 +16,13 @@ def home(request):
     means = Ratings.objects.annotate(
         avg=(F('food_Rating') + F('service_Rating') + F('atmosphere_Rating') + F('price_Rating')) / 4)
 
-    context_dict = {}
-    top_venues = [x for x in means.order_by('-avg').values('rest_id', 'avg')]
-
+    mean_per_venue = means.values_list('rest_id').annotate(Avg('avg'))
+    sorted_means = mean_per_venue.order_by('-avg')
+    top_venues = [sorted_means[x] for x in range(0,10)]
+    print(sorted_means)
     for i in range(0, 10):
-        query = Restaurant.objects.get(restaurant_ID=top_venues[i]['rest_id'])
-        top_venues[i]['name'] = query.name
-        top_venues[i]['category'] = query.category
+        query = Restaurant.objects.get(restaurant_ID=top_venues[i][0])
+        top_venues[i] = {'rest_id': query.restaurant_ID, 'name': query.name, 'category': query.category}
 
     context_dict = {'top_venues': top_venues}
 
@@ -48,14 +48,54 @@ def show_category(request, category_name):
 
 
 def show_venue(request, category_name, venue_id):
-    context_dict = {}
+    context_dict = {'reviewed': False,}
     try:
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
         context_dict['venue'] = venue
 
+        reviews = Ratings.objects.filter(rest_id=venue_id)
+
+        if len(reviews) != 0:
+            context_dict['reviews'] = []
+
+            for value in reviews:
+                name = value.cust_id.user.username
+                context_dict['reviews'].append({
+                    'name': name,
+                    'comment': value.comment
+                })
+
         for rating_type in rating_types:
-            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[
-                rating_type + '__avg']
+            try:
+                context_dict[rating_type] = round(reviews.aggregate(Avg(rating_type))[
+                                                      rating_type + '__avg'], 2)
+            except TypeError:
+                context_dict[rating_type] = None
+
+        if request.user.is_authenticated:
+            try:
+                venue = Restaurant.objects.get(restaurant_ID=venue_id)
+                Ratings.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
+                context_dict['reviewed'] = True
+            except Ratings.DoesNotExist:
+                pass
+
+            if request.method == 'POST' and not context_dict['reviewed']:
+                print(request.POST)
+                review_form = ReviewForm(request.POST)
+
+                if review_form.is_valid() and not reviewed:
+                    review = review_form.save(commit=False)
+                    review.cust_id = Customer.objects.get(user=request.user)
+                    review.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
+                    review.food_Rating = int(request.POST['ratingfood'])
+                    review.service_Rating = int(request.POST['ratingservice'])
+                    review.atmosphere_Rating = int(request.POST['ratingatmosphere'])
+                    review.price_Rating = int(request.POST['ratingprice'])
+                    review.save()
+
+                else:
+                    print(review_form.errors)
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
