@@ -47,7 +47,7 @@
 
 <div id="form">
 	<hr />
-	{% if user.is_authenticated and user.customer %}
+	{% if user.is_authenticated and user.customer and not reviewed %}
 		<h2> Rate this Restaurant </h2>
 		<form id="rating_form" method="post" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
 			{% csrf_token %}
@@ -98,10 +98,12 @@
 
 <div id="Comments">
 	<h2> Comments </h2>
-	{% if comments %}
+	{% if reviews %}
 	<ul>
-		{% for comment in comments %}
-			<li> comment </li>
+		{% for review in reviews %}
+			<li> {{ review.name }} </li>
+			<li> {{ review.comment }} </li>
+			<br>
 		{% endfor %}
 	</ul>
 	{% else %}
