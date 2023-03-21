@@ -105,8 +105,10 @@ def show_venue(request, category_name, venue_id):
             except Favourited.DoesNotExist:
                 pass
 
+            print('Has favourited:', context_dict['faved'])
             if request.method == 'POST':
-                if 'favourite' in request.POST:
+                if not 'submitform' in request.POST:
+                    print(request.POST)
                     if not context_dict['faved']:
                         context_dict['faved'] = True
                         fave_form = FavouriteForm()
@@ -115,6 +117,7 @@ def show_venue(request, category_name, venue_id):
                         fave.cust_id = Customer.objects.get(user=request.user)
                         fave.save()
                     else:
+                        context_dict['faved'] = False
                         Favourited.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user)).delete()
 
                 elif not context_dict['reviewed']:
