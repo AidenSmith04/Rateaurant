@@ -24,9 +24,10 @@ def home(request):
 
     mean_per_venue = means.values_list('rest_id').annotate(Avg('avg'))
     sorted_means = mean_per_venue.order_by('-avg')
-    top_venues = [sorted_means[x] for x in range(0,10)]
+    length_or_ten = min(len(sorted_means), 10)
+    top_venues = [sorted_means[x] for x in range(0,length_or_ten)]
     print(sorted_means)
-    for i in range(0, 10):
+    for i in range(0, length_or_ten):
         query = Restaurant.objects.get(restaurant_ID=top_venues[i][0])
         top_venues[i] = {'rest_id': query.restaurant_ID, 'name': query.name, 'category': query.category}
 
