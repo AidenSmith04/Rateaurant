@@ -72,25 +72,6 @@ def show_venue(request, category_name, venue_id):
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
         context_dict['venue'] = venue
 
-        reviews = Ratings.objects.filter(rest_id=venue_id)
-
-        if len(reviews) != 0:
-            context_dict['reviews'] = []
-
-            for value in reviews:
-                name = value.cust_id.user.username
-                context_dict['reviews'].append({
-                    'name': name,
-                    'comment': value.comment
-                })
-
-        for rating_type in rating_types:
-            try:
-                context_dict[rating_type] = round(reviews.aggregate(Avg(rating_type))[
-                                                      rating_type + '__avg'], 2)
-            except TypeError:
-                context_dict[rating_type] = None
-
         if request.user.is_authenticated:
             venue = Restaurant.objects.get(restaurant_ID=venue_id)
             try:
@@ -132,9 +113,28 @@ def show_venue(request, category_name, venue_id):
                         review.atmosphere_Rating = int(request.POST['ratingatmosphere'])
                         review.price_Rating = int(request.POST['ratingprice'])
                         review.save()
-
+                        context_dict['reviewed'] = True
                     else:
                         print(review_form.errors)
+
+        reviews = Ratings.objects.filter(rest_id=venue_id)
+
+        if len(reviews) != 0:
+            context_dict['reviews'] = []
+
+            for value in reviews:
+                name = value.cust_id.user.username
+                context_dict['reviews'].append({
+                    'name': name,
+                    'comment': value.comment
+                })
+
+        for rating_type in rating_types:
+            try:
+                context_dict[rating_type] = round(reviews.aggregate(Avg(rating_type))[
+                                                      rating_type + '__avg'], 2)
+            except TypeError:
+                context_dict[rating_type] = None
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None
