@@ -108,6 +108,7 @@ def show_venue(request, category_name, venue_id):
             if request.method == 'POST':
                 if 'favourite' in request.POST:
                     if not context_dict['faved']:
+                        context_dict['faved'] = True
                         fave_form = FavouriteForm()
                         fave = fave_form.save(commit=False)
                         fave.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
