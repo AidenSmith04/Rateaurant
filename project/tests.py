@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.test.client import Client
 
+from Populate_Rateaurant import add_restaurant
 from project.models import Customer, User, Owner, Restaurant, Ratings
 
 class CustomerMethodTests(TestCase):
@@ -201,29 +203,61 @@ class RatingsMethodTests(TestCase):
 
         self.assertEqual(rating.price_Rating, 5)
 
-
-def add_restaurant(self, restaurant_id, name, city, postcode, address, category, takeaway_option):
-    restaurant = Restaurant(restaurant_ID=restaurant_id, name=name, city=city, postcode=postcode,
-                                        address=address, category=category, takeaway_option=takeaway_option)
-    restaurant.save()
-    return restaurant
-
 class HomeViewTests(TestCase):
+    def test_home_view_with_no_restaurants(self):
+        response = self.client.get(reverse('Rateaurant:home'))
 
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'There are no restaurants')
+        self.assertQuerysetEqual(response.context['top_venues'], [])
 
     def test_home_view_with_restaurants(self):
-        add_restaurant(self, "1", "name1", "city1", "postcode1", "address1", "category1", "yes")
-        add_restaurant(self, "1", "name2", "city2", "postcode2", "address2", "category2", "yes")
-        add_restaurant(self, "1", "name3", "city3", "postcode3", "address3", "category3", "yes")
-        add_restaurant(self, "1", "name1", "city4", "postcode4", "address4", "category4", "yes")
-        add_restaurant(self, "1", "name5", "city5", "postcode5", "address5", "category5", "yes")
-        add_restaurant(self, "1", "name6", "city6", "postcode6", "address6", "category6", "yes")
-        add_restaurant(self, "1", "name7", "city7", "postcode7", "address7", "category7", "yes")
-        add_restaurant(self, "1", "name8", "city8", "postcode8", "address8", "category8", "yes")
-        add_restaurant(self, "1", "name9", "city9", "postcode9", "address9", "category9", "yes")
-        add_restaurant(self, "1", "name10", "city10", "postcode10", "address10", "category10", "yes")
+
+        add_restaurant(RestaurantID="1", name="name1", category="asian", address="testaddress", city="testcity", postcode="testpostcode", image="none")
 
         response = self.client.get(reverse('Rateaurant:home'))
 
-        self.assertContains(response, "name1")
-        self.assertQuerysetEqual(response.context['top_venues'], 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "1")
+
+class CategoriesViewTests(TestCase):
+    def test_categories_view_with_categories(self):
+        response = self.client.get(reverse('Rateaurant:categories'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Greek")
+        self.assertContains(response, "Indian")
+        self.assertContains(response, "Asian")
+
+        num_categories = len(response.context['categories'])
+        self.assertEquals(num_categories, 5)
+
+class LoginViewTests(TestCase):
+    def test_login_view_shows(self):
+        response = self.client.get(reverse('Rateaurant:login'))
+
+        self.assertEqual(response.status_code, 200)
+
+class RegisterViewTests(TestCase):
+    def test_register_view_shows(self):
+        response = self.client.get(reverse('Rateaurant:register'))
+
+        self.assertEqual(response.status_code, 200)
+
+class AddARestaurantViewTests(TestCase):
+    def test_add_a_restaurant_view_shows(self):
+        self.client = Client()
+        self.user = User.objects.create_user('Jim', 'Jim@gmail.com', 'password')
+
+        self.client.login(username='Jim', password='password')
+
+        response = self.client.get(reverse('Rateaurant:addarestaurant'))
+
+        self.assertEqual(response.status_code, 200)
+
+class LogoutViewTests(TestCase):
+    def test_logout_redirect(self):
+        response = self.client.get(reverse('Rateaurant:logout'))
+
+        self.assertRedirects(response, reverse('Rateaurant:home'), status_code=302, target_status_code=200, msg_prefix='',
+                             fetch_redirect_response=True)

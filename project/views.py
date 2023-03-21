@@ -5,24 +5,31 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Avg, F
-from project.models import Restaurant, Owner, Ratings
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm
+from project.models import Restaurant, Customer, Owner, Ratings, User, Favourited
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm, ReviewForm, FavouriteForm
 from Populate_Rateaurant import generateID
 
 rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
 
+def is_customer(user):
+    try:
+        if user.customer:
+            return True
+    except:
+        return False
 
 def home(request):
     means = Ratings.objects.annotate(
         avg=(F('food_Rating') + F('service_Rating') + F('atmosphere_Rating') + F('price_Rating')) / 4)
 
-    context_dict = {}
-    top_venues = [x for x in means.order_by('-avg').values('rest_id', 'avg')]
-
-    for i in range(0, 10):
-        query = Restaurant.objects.get(restaurant_ID=top_venues[i]['rest_id'])
-        top_venues[i]['name'] = query.name
-        top_venues[i]['category'] = query.category
+    mean_per_venue = means.values_list('rest_id').annotate(Avg('avg'))
+    sorted_means = mean_per_venue.order_by('-avg')
+    length_or_ten = min(len(sorted_means), 10)
+    top_venues = [sorted_means[x] for x in range(0,length_or_ten)]
+    print(sorted_means)
+    for i in range(0, length_or_ten):
+        query = Restaurant.objects.get(restaurant_ID=top_venues[i][0])
+        top_venues[i] = {'rest_id': query.restaurant_ID, 'name': query.name, 'category': query.category}
 
     context_dict = {'top_venues': top_venues}
 
@@ -31,7 +38,19 @@ def home(request):
 
 
 def categories(request):
-    response = render(request, 'Rateaurant/Categories.html', context={'categories': Categories})
+    context_dict = {'categories': Categories, 'favourites': []}
+
+    if request.user.is_authenticated and is_customer(request.user):
+        faves = Favourited.objects.filter(cust_id=Customer.objects.get(user=request.user))
+
+        for fave in faves:
+            context_dict['favourites'].append({
+                'name': fave.rest_id.name,
+                'rest_id': fave.rest_id.restaurant_ID,
+                'category': fave.rest_id.category
+            })
+            print(context_dict['favourites'][-1])
+    response = render(request, 'Rateaurant/Categories.html', context=context_dict)
     return response
 
 
@@ -48,14 +67,74 @@ def show_category(request, category_name):
 
 
 def show_venue(request, category_name, venue_id):
-    context_dict = {}
+    context_dict = {'reviewed': False, 'faved': False}
     try:
         venue = Restaurant.objects.get(restaurant_ID=venue_id)
         context_dict['venue'] = venue
 
+        reviews = Ratings.objects.filter(rest_id=venue_id)
+
+        if len(reviews) != 0:
+            context_dict['reviews'] = []
+
+            for value in reviews:
+                name = value.cust_id.user.username
+                context_dict['reviews'].append({
+                    'name': name,
+                    'comment': value.comment
+                })
+
         for rating_type in rating_types:
-            context_dict[rating_type] = Ratings.objects.filter(rest_id=venue_id).aggregate(Avg(rating_type))[
-                rating_type + '__avg']
+            try:
+                context_dict[rating_type] = round(reviews.aggregate(Avg(rating_type))[
+                                                      rating_type + '__avg'], 2)
+            except TypeError:
+                context_dict[rating_type] = None
+
+        if request.user.is_authenticated:
+            venue = Restaurant.objects.get(restaurant_ID=venue_id)
+            try:
+                Ratings.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
+                context_dict['reviewed'] = True
+            except Ratings.DoesNotExist:
+                pass
+
+            try:
+                Favourited.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
+                context_dict['faved'] = True
+            except Favourited.DoesNotExist:
+                pass
+
+            print('Has favourited:', context_dict['faved'])
+            if request.method == 'POST':
+                if not 'submitform' in request.POST:
+                    print(request.POST)
+                    if not context_dict['faved']:
+                        context_dict['faved'] = True
+                        fave_form = FavouriteForm()
+                        fave = fave_form.save(commit=False)
+                        fave.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
+                        fave.cust_id = Customer.objects.get(user=request.user)
+                        fave.save()
+                    else:
+                        context_dict['faved'] = False
+                        Favourited.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user)).delete()
+
+                elif not context_dict['reviewed']:
+                    review_form = ReviewForm(request.POST)
+
+                    if review_form.is_valid() and not context_dict['reviewed']:
+                        review = review_form.save(commit=False)
+                        review.cust_id = Customer.objects.get(user=request.user)
+                        review.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
+                        review.food_Rating = int(request.POST['ratingfood'])
+                        review.service_Rating = int(request.POST['ratingservice'])
+                        review.atmosphere_Rating = int(request.POST['ratingatmosphere'])
+                        review.price_Rating = int(request.POST['ratingprice'])
+                        review.save()
+
+                    else:
+                        print(review_form.errors)
 
     except Restaurant.DoesNotExist:
         context_dict['venue'] = None

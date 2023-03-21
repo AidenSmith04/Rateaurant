@@ -149,13 +149,20 @@ li {
     text-align: center;
 }
 
+#comment {
+    margin: 15px;
+    padding: 5px;
+    border: 1px solid white;
+}
+
 #favourite {
     float: right;
 }
 
 #favourite > input {
-    display:none;
+display: none;
 }
+
 
 #favourite > label {
     font-size: 30px;
@@ -171,6 +178,10 @@ li {
 
 #favourite > input:checked + label {
     -webkit-text-fill-color: #f54263;
+}
+
+#favourite > input:not(checked) + label {
+    -webkit-text-fill-color: transparent;
 }
 
 #rating_form {
@@ -231,7 +242,7 @@ li {
 .rating > label {
     font-size: 50px;
     float: right;
-    color: #aaa; /*grey*/
+    color: #aaa;
     text-decoration: none;
     -webkit-transition: color .8s;
     -moz-transition: color .8s;
@@ -240,8 +251,8 @@ li {
     float:none
 }
 
-.rating > input:checked ~ label, /* makes selected and any before selected yellow */
-.rating > label:hover ~ label, /* makes hovered and any before hovered yellow */
+.rating > input:checked ~ label,
+.rating > label:hover ~ label,
 .rating > input:checked + label,
 .rating > input:hover + label {
     cursor: pointer;

@@ -1,5 +1,5 @@
 from django import forms
-from project.models import Customer, Owner, Restaurant, Ownership
+from project.models import Customer, Owner, Restaurant, Ownership, Ratings, Favourited
 from django.contrib.auth.models import User
 
 Categories = {
@@ -23,7 +23,7 @@ class RestaurantForm(forms.ModelForm):
     postcode = forms.CharField(max_length=50, help_text="Please enter the postcode of the venue.")
     category = forms.CharField(widget=forms.Select(choices=Categories),
                                help_text="Please enter the category of the venue.")
-    #picture = forms.ImageField(help_text="Image of restaurant.")
+    #tpicture = forms.ImageField(help_text="Image of restaurant.")
     takeaway_option = forms.CharField(widget=forms.Select(choices=YesNo), help_text="")
 
     class Meta:
@@ -59,7 +59,22 @@ class OwnerForm(forms.ModelForm):
 
 
 class OwnershipForm(forms.ModelForm):
-
     class Meta:
         model = Ownership
         exclude = ('owner_ID', 'restaurant_ID')
+
+
+class ReviewForm(forms.ModelForm):
+    comment = forms.CharField(max_length=300, required=False)
+    forms
+    class Meta:
+        model = Ratings
+        fields = ('comment',)
+
+
+class FavouriteForm(forms.ModelForm):
+    field = forms.BooleanField(widget=forms.Select(attrs={'onchange': 'submit();'}))
+
+    class Meta:
+        model = Favourited
+        fields = ('field',)
