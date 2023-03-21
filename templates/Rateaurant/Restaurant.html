@@ -25,7 +25,7 @@
 	<div>
 		<form id = "favourite" method="post" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
 			{% csrf_token %}
-			<input onchange="this.form.submit()" type="checkbox" name="favourite" id="favourite_checkbox"/><label for="favourite_checkbox" title="Add to Favourites">❤</label>
+			<input type="checkbox" name="favourite" id="favourite_checkbox"/><label for="favourite_checkbox" onclick="this.form.submit()" title="Add to Favourites">❤</label>
 		</form>
 	</div>
   <p>
