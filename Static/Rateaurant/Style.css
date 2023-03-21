@@ -159,6 +159,10 @@ li {
     float: right;
 }
 
+#favourite > input {
+display: none;
+}
+
 
 #favourite > label {
     font-size: 30px;
