@@ -116,46 +116,48 @@ def populate_ownership(restaurants, owners):
 
 def populate_ratings(restaurants, customer):
     dict = {}
-    rate = {"Excellent": [("food_rating", 5), ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating", 5),
+    rate = {0: [("food_rating", 5), ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating", 5),
                           ("favourited", True), ("comment", "The best restraunt I have ever been to would recommend")],
-            "Good": [("food_rating", 4), ("service_rating", 4), ("atmosphere_rating", 4), ("price_rating", 4),
+            1: [("food_rating", 4), ("service_rating", 4), ("atmosphere_rating", 4), ("price_rating", 4),
                      ("favourited", True), ("comment", "Good restraunt for a night out")],
-            "Average": [("food_rating", 3), ("service_rating", 3), ("atmosphere_rating", 3), ("price_rating", 3),
+            2: [("food_rating", 3), ("service_rating", 3), ("atmosphere_rating", 3), ("price_rating", 3),
                         ("favourited", False), ("comment", "Not a bad restraunt but nothing special about it")],
-            "Poor": [("food_rating", 2), ("service_rating", 2), ("atmosphere_rating", 2), ("price_rating", 2),
+            3: [("food_rating", 2), ("service_rating", 2), ("atmosphere_rating", 2), ("price_rating", 2),
                      ("favourited", False), ("comment", "Not a good experience I do not recommend")],
-            "Bad": [("food_rating", 1), ("service_rating", 1), ("atmosphere_rating", 1), ("price_rating", 1),
+            4: [("food_rating", 1), ("service_rating", 1), ("atmosphere_rating", 1), ("price_rating", 1),
                     ("favourited", False),
                     ("comment", "Waited 3 hours before the food came and it was over priced slop")],
-            "Terrible": [("food_rating", 0), ("service_rating", 0), ("atmosphere_rating", 0), ("price_rating", 0),
+            5: [("food_rating", 0), ("service_rating", 0), ("atmosphere_rating", 0), ("price_rating", 0),
                          ("favourited", False), ("comment", "Got the worst food poisoning of my life")],
-            "Complex1": [("food_rating", 5), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating", 5),
+            6: [("food_rating", 5), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating", 5),
                          ("favourited", True), ("comment", "Wonderful restraunt exept the service is terrible")],
-            "Complex2": [("food_rating", 3), ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating", 5),
+            7: [("food_rating", 3), ("service_rating", 5), ("atmosphere_rating", 5), ("price_rating", 5),
                          ("favourited", False),
                          ("comment", "Wonderful place and people but unfortunalty the food was terrible")],
-            "Complex3": [("food_rating", 5), ("service_rating", 5), ("atmosphere_rating", 1), ("price_rating", 1),
+            8: [("food_rating", 5), ("service_rating", 5), ("atmosphere_rating", 1), ("price_rating", 1),
                          ("favourited", False),
                          ("comment", "Amazing food and waiters but over  priced and full of snobbish customers")],
-            "Complex4": [("food_rating", 2), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating", 5),
+            9: [("food_rating", 2), ("service_rating", 2), ("atmosphere_rating", 5), ("price_rating", 5),
                          ("favourited", False),
                          ("comment", "would clarify as a restraunt for students thats the food quality and vibe")]}
 
-    rate_keys = list(rate.keys())
-    count = 9
-
-    for i in range(len(restaurants)):
-        if i <= 9:
-            temp = rate[rate_keys[i]]
-            temp.insert(0, ("RestaurantID", restaurants[i]))
-            temp.insert(0, ("CustomerID", customer[i]))
-            dict[i] = {key: value for (key, value) in temp}
-        elif i > 9:
-            temp = rate[rate_keys[count]]
-            temp.insert(0, ("RestaurantID", restaurants[i]))
+    
+    count =0
+    for i in restaurants:
+       
+        if count <= 9:
+            temp = rate[count].copy()
+            temp.insert(0, ("RestaurantID",i))
             temp.insert(0, ("CustomerID", customer[count]))
-            dict[i] = {key: value for (key, value) in temp}
-            count -= 1
+            dict[count] = {key: value for (key, value) in temp}
+            count+=1
+        elif count > 9:
+            temp = rate[count-10].copy()
+            temp.insert(0, ("RestaurantID",i))
+            temp.insert(0, ("CustomerID", customer[count-10]))
+            dict[count] = {key: value for (key, value) in temp}
+            count += 1
+        
     return dict
 
 
@@ -203,7 +205,6 @@ def add_ratings(customerID, restaurantID, foodRating, serviceRating, atmosphereR
                                          service_Rating=serviceRating, atmosphere_Rating=atmosphereRating,
                                          price_Rating=priceRating, comment=comment)
     rate.save()
-    print(rate.rest_id)
     return rate
 
 def add_favourite(customerID, restaurantID):
@@ -240,14 +241,13 @@ def populate():
 
     for key, val in ownership.items():
         add_ownership(key, val)
-    count =0
+ 
     for key, val in rating.items():
-        count+=1
         add_ratings(val["CustomerID"], val["RestaurantID"], val["food_rating"], val["service_rating"], val["atmosphere_rating"], val["price_rating"], val["comment"])
         if(val["favourited"]):
             add_favourite(val["CustomerID"], val["RestaurantID"])
  
-    print(count)
+
 
 
 if __name__ == '__main__':
