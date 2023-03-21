@@ -118,7 +118,7 @@ def show_venue(request, category_name, venue_id):
                 elif not context_dict['reviewed']:
                     review_form = ReviewForm(request.POST)
 
-                    if review_form.is_valid() and not reviewed:
+                    if review_form.is_valid() and not context_dict['reviewed']:
                         review = review_form.save(commit=False)
                         review.cust_id = Customer.objects.get(user=request.user)
                         review.rest_id = Restaurant.objects.get(restaurant_ID=venue_id)
