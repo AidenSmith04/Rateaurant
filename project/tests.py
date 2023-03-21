@@ -234,7 +234,7 @@ class CategoriesViewTests(TestCase):
 
 class LoginViewTests(TestCase):
     def test_login_view_shows(self):
-        response = self.client.get(reverse('Rateaurant:login'))
+        response = self.client.get(reverse('Rateaurant:'))
 
         self.assertEqual(response.status_code, 200)
 
