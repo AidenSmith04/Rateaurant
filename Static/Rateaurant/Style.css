@@ -159,9 +159,6 @@ li {
     float: right;
 }
 
-#favourite > input {
-    display:none;
-}
 
 #favourite > label {
     font-size: 30px;
@@ -177,6 +174,10 @@ li {
 
 #favourite > input:checked + label {
     -webkit-text-fill-color: #f54263;
+}
+
+#favourite > input:not(checked) + label {
+    -webkit-text-fill-color: transparent;
 }
 
 #rating_form {
