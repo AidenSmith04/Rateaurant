@@ -22,6 +22,7 @@
 {% endif %}
 
 <div id="restaurantlist">
+	{% if user.customer %}
 	<div>
 		<form id = "favourite" method="POST" action="{% url 'Rateaurant:show_venue' venue.category venue.restaurant_ID %}">
 			{% csrf_token %}
@@ -29,6 +30,7 @@
 			<label onclick="this.form.submit()" for="favourite_checkbox" title="Add to Favourites">❤</label>
 		</form>
 	</div>
+	{% endif %}
   <p>
       <h3> {{ venue.name }} </h3>
       Address: {{ venue.address }} <br>

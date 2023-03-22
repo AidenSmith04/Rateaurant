@@ -79,11 +79,15 @@ def show_venue(request, category_name, venue_id):
                 context_dict['reviewed'] = True
             except Ratings.DoesNotExist:
                 pass
+            except Customer.DoesNotExist:
+                pass
 
             try:
                 Favourited.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
                 context_dict['faved'] = True
             except Favourited.DoesNotExist:
+                pass
+            except Customer.DoesNotExist:
                 pass
 
             print('Has favourited:', context_dict['faved'])
