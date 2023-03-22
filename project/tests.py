@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.test.client import Client
 
-from Populate_Rateaurant import add_restaurant
+from Populate_Rateaurant import add_restaurant, populate_restaurant
 from project.models import Customer, User, Owner, Restaurant, Ratings
 
 class CustomerMethodTests(TestCase):
@@ -221,6 +221,7 @@ class HomeViewTests(TestCase):
         self.assertContains(response, "1")
 
 class CategoriesViewTests(TestCase):
+    #Categories always exist in the forms.py file so there is always categories
     def test_categories_view_with_categories(self):
         response = self.client.get(reverse('Rateaurant:categories'))
 
@@ -232,9 +233,45 @@ class CategoriesViewTests(TestCase):
         num_categories = len(response.context['categories'])
         self.assertEquals(num_categories, 5)
 
+class ShowCategoryViewTests(TestCase):
+    def test_show_category_view_with_no_restaurants(self):
+        response = self.client.get(reverse('Rateaurant:show_category', kwargs={'category_name': 'Asian'}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Unknown Category")
+
+        num_categories = len(response.context['venues'])
+        self.assertEquals(num_categories, 0)
+
+    def test_show_category_view_with_restaurants(self):
+        add_restaurant(RestaurantID="1", name="name1", category="Asian", address="testaddress", city="testcity",
+                       postcode="testpostcode", image="none")
+        add_restaurant(RestaurantID="2", name="name2", category="Asian", address="testaddress2", city="testcity2",
+                       postcode="testpostcode2", image="none")
+
+        response = self.client.get(reverse('Rateaurant:show_category', kwargs={'category_name': 'Asian'}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "1")
+
+        num_categories = len(response.context['venues'])
+        self.assertEquals(num_categories, 2)
+
+
+class ShowVenueViewTests(TestCase):
+    def test_show_category_view(self):
+        add_restaurant(RestaurantID="1", name="name1", category="Asian", address="testaddress", city="testcity",
+                       postcode="testpostcode", image="none")
+
+        response = self.client.get(reverse('Rateaurant:show_venue', kwargs={'category_name': 'Asian', 'venue_id': '1'}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['faved'], False)
+        self.assertEqual(response.context['venue'].name, "name1")
+
 class LoginViewTests(TestCase):
     def test_login_view_shows(self):
-        response = self.client.get(reverse('Rateaurant:'))
+        response = self.client.get(reverse('Rateaurant:login'))
 
         self.assertEqual(response.status_code, 200)
 
