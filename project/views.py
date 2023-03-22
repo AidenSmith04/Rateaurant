@@ -124,10 +124,11 @@ def show_venue(request, category_name, venue_id):
 
             for value in reviews:
                 name = value.cust_id.user.username
-                context_dict['reviews'].append({
-                    'name': name,
-                    'comment': value.comment
-                })
+                if len(value.comment) > 0:
+                    context_dict['reviews'].append({
+                        'name': name,
+                        'comment': value.comment
+                    })
 
         for rating_type in rating_types:
             try:
