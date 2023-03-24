@@ -6,10 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.db.models import Avg, F
 from project.models import Restaurant, Customer, Owner, Ratings, User, Favourited
-from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm, ReviewForm, FavouriteForm
+from project.forms import CustomerForm, OwnerForm, RestaurantForm, UserForm, Categories, OwnershipForm, ReviewForm, \
+    FavouriteForm
 from Populate_Rateaurant import generateID
 
+# List to iterate through when show_venue prepares rating data for display
 rating_types = ['food_Rating', 'service_Rating', 'atmosphere_Rating', 'price_Rating']
+
 
 def is_customer(user):
     try:
@@ -18,15 +21,19 @@ def is_customer(user):
     except:
         return False
 
+
 def home(request):
+    # Calculate mean rating per review
     means = Ratings.objects.annotate(
         avg=(F('food_Rating') + F('service_Rating') + F('atmosphere_Rating') + F('price_Rating')) / 4)
 
+    # Calculate mean rating per venue, sort descending and get top 10
     mean_per_venue = means.values_list('rest_id').annotate(Avg('avg'))
     sorted_means = mean_per_venue.order_by('-avg')
     length_or_ten = min(len(sorted_means), 10)
-    top_venues = [sorted_means[x] for x in range(0,length_or_ten)]
-    print(sorted_means)
+    top_venues = [sorted_means[x] for x in range(0, length_or_ten)]
+
+    # Prepare context dictionary with data of each venue
     for i in range(0, length_or_ten):
         query = Restaurant.objects.get(restaurant_ID=top_venues[i][0])
         top_venues[i] = {'rest_id': query.restaurant_ID, 'name': query.name, 'category': query.category}
@@ -40,6 +47,7 @@ def home(request):
 def categories(request):
     context_dict = {'categories': Categories, 'favourites': []}
 
+    # If logged in as customer, prepare data of favourite venues for display
     if request.user.is_authenticated and is_customer(request.user):
         faves = Favourited.objects.filter(cust_id=Customer.objects.get(user=request.user))
 
@@ -49,12 +57,13 @@ def categories(request):
                 'rest_id': fave.rest_id.restaurant_ID,
                 'category': fave.rest_id.category
             })
-            print(context_dict['favourites'][-1])
+
     response = render(request, 'Rateaurant/Categories.html', context=context_dict)
     return response
 
 
 def show_category(request, category_name):
+    # Prepare list of venues under the given category to display
     context_dict = {}
     try:
         venues = Restaurant.objects.filter(category=category_name)
@@ -74,6 +83,7 @@ def show_venue(request, category_name, venue_id):
 
         if request.user.is_authenticated:
             venue = Restaurant.objects.get(restaurant_ID=venue_id)
+            # Check if user has already reviewed, to hide review form
             try:
                 Ratings.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
                 context_dict['reviewed'] = True
@@ -82,6 +92,7 @@ def show_venue(request, category_name, venue_id):
             except Customer.DoesNotExist:
                 pass
 
+            # Check if user has marked as favourite, to display heart image accordingly
             try:
                 Favourited.objects.get(rest_id=venue, cust_id=Customer.objects.get(user=request.user))
                 context_dict['faved'] = True
@@ -90,7 +101,8 @@ def show_venue(request, category_name, venue_id):
             except Customer.DoesNotExist:
                 pass
 
-            print('Has favourited:', context_dict['faved'])
+            # For a POST request, if attribute 'submitform' exists within it, save review form
+            # else save toggle favourite
             if request.method == 'POST':
                 if not 'submitform' in request.POST:
                     print(request.POST)
@@ -123,6 +135,7 @@ def show_venue(request, category_name, venue_id):
 
         reviews = Ratings.objects.filter(rest_id=venue_id)
 
+        # Prepare data of comments for display
         if len(reviews) != 0:
             context_dict['reviews'] = []
 
@@ -134,6 +147,7 @@ def show_venue(request, category_name, venue_id):
                         'comment': value.comment
                     })
 
+        # Calculate ratings for display
         for rating_type in rating_types:
             try:
                 context_dict[rating_type] = round(reviews.aggregate(Avg(rating_type))[
@@ -157,6 +171,7 @@ def register(request):
         customer_form = CustomerForm(request.POST)
         owner_form = OwnerForm(request.POST)
 
+        # Register user as customer or owner depending on as_owner form field
         if user_form.is_valid() and customer_form.is_valid() and owner_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user.password)
@@ -179,8 +194,6 @@ def register(request):
             print(user_form.errors, customer_form.errors, owner_form.errors)
     else:
         user_form = UserForm()
-        customer_form = CustomerForm()
-        owner_form = OwnerForm()
 
     context = {
         'user_form': user_form,
@@ -220,9 +233,8 @@ def add_a_restaurant(request):
 
             restaurant = restaurant_form.save(commit=False)
             restaurant.restaurant_ID = restaurant_id
-            print(request.FILES)
+
             if 'picture' in request.FILES:
-                print('mogus')
                 restaurant.picture = request.FILES['picture']
 
             restaurant.save()

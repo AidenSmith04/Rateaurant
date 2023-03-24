@@ -2,6 +2,8 @@ from django import forms
 from project.models import Customer, Owner, Restaurant, Ownership, Ratings, Favourited
 from django.contrib.auth.models import User
 
+# Choices fields for dropdown menu form input
+
 Categories = {
     ('Italian', 'Italian'),
     ('Asian', 'Asian'),
