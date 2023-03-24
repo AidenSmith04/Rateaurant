@@ -32,9 +32,10 @@ def generatePassword():
 
 def populate_restaurant():
     path = getImagePath()
-    url = "https://ratings.food.gov.uk/OpenDataFiles/FHRS776en-GB.xml"
-    response = requests.get(url)
-    data = xmltodict.parse(response.content)
+    #url = "https://ratings.food.gov.uk/OpenDataFiles/FHRS776en-GB.xml"
+    #response = requests.get(url)
+    with open("FHRS776en-GB.xml") as fd:
+        data = xmltodict.parse(fd.read())
     ret = data["FHRSEstablishment"]["EstablishmentCollection"]["EstablishmentDetail"]
     dict = {}
     wanted = ["Zizzi", "Wagamama", "Ubiquitous chip", "The Ivy", "The Finnieston", "Ramen Dayo", "Paesano Pizza",

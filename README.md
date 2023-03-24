@@ -8,10 +8,11 @@ pip install xmltodict
 
 If you get a table doesnt exist error:
 1) Go into project/migrations and delete everything except for the __pycache__ file.
-	NOTE: delete the files inside the __pycache__ folder but not the folder itself
+    NOTE: delete the files inside the __pycache__ folder but not the folder itself
 2) Delete db.sqlite3 in the top folder
 3) python manage.py makemigrations project
 4) python manage.py migrate
+5) python Populate_Rateaurant.py populate
 
 Aiden:
 - Add Bootstrap
